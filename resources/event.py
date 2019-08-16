@@ -3,12 +3,14 @@ from models.event import EventModel
 
 class Event(Resource):
     def get(self, name):
+        '''return details about the event with the given name'''
         event = EventModel.find_by_name(name)
         if event:
             return event.json()
         return {'message': 'Event not found'}, 404
 
     def post(self, name):
+        '''create a new event with the given name'''
         # check if duplicate exists
         if EventModel.find_by_name(name):
             return {'message': 'The event with the name "{}" already exists'.format(name)}, 400

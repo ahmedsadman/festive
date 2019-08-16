@@ -6,6 +6,8 @@ class EventModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
 
+    # participants -> backref from participant model
+
     def __init__(self, name):
         self.name = name
 
@@ -29,3 +31,7 @@ class EventModel(db.Model):
     @classmethod
     def find_by_name(cls, name):
         return cls.query.filter_by(name=name).first()
+
+    @classmethod
+    def find_by_id(cls, id):
+        return cls.query.filter_by(id=id).first()
