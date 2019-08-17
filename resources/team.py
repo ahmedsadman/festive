@@ -1,11 +1,12 @@
 from flask_restful import Resource, reqparse
 from models.team import TeamModel
+from application.error_handlers import *
 
 
 class Team(Resource):
     def post(self, name, event_id):
         if TeamModel.find_by_name(name):
-            return {'message': 'A team with the name "{}" already exists'.format(name)}
+            raise BadRequest(message='A team with the given name already exists')
         team = TeamModel(name, event_id)
         team.save()
         return team.json(), 201
@@ -14,4 +15,4 @@ class Team(Resource):
         team = TeamModel.find_by_name(name)
         if team:
             return team.json()
-        return {'message': 'Team not found'}, 400
+        raise NotFound(message='Team not found')

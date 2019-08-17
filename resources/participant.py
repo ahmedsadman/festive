@@ -1,6 +1,6 @@
 from flask_restful import Resource, reqparse
 from models.participant import ParticipantModel
-
+from application.error_handlers import BadRequest
 
 class Participant(Resource):
     parser = reqparse.RequestParser()
@@ -13,7 +13,7 @@ class Participant(Resource):
         data = Participant.parser.parse_args()
 
         if ParticipantModel.find(data['email']):
-            return {'message': 'A participant with the email "{}" already exists'.format(data['email'])}, 400
+            raise BadRequest(message='The email is already registered')
 
         participant = ParticipantModel(data['name'], data['email'], data['is_leader'], data['institute'])
         participant.save()
