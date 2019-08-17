@@ -9,9 +9,11 @@ class ParticipantModel(db.Model):
     is_leader = db.Column(db.Boolean, default=False)
     institute = db.Column(db.String(60), nullable=True)
 
-    # for many to many relationship, maps user to participated events
+    # for many to many relationship, maps user to events/teams
     events = db.relationship('EventModel', secondary='event_participant',
                              backref=db.backref('participants', lazy='dynamic'))
+    teams = db.relationship('TeamModel', secondary='team_participant',
+                            backref=db.backref('team_members', lazy='dynamic'))
 
     def __init__(self, name, email, is_leader=False, institute=None):
         self.name = name
