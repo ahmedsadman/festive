@@ -1,5 +1,5 @@
 from flask_restful import Resource, reqparse
-from models.participant import ParticipantModel
+from application.models.participant import ParticipantModel
 from application.error_handlers import BadRequest
 
 class Participant(Resource):

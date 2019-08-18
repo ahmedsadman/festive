@@ -1,5 +1,5 @@
 from flask_restful import Resource, reqparse
-from models.team import TeamModel
+from application.models.team import TeamModel
 from application.error_handlers import *
 
 

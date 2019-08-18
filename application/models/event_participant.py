@@ -1,6 +1,6 @@
 from application import db
-from models.participant import ParticipantModel
-from models.event import EventModel
+from application.models.participant import ParticipantModel
+from application.models.event import EventModel
 
 
 class EventParticipantModel(db.Model):

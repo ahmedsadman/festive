@@ -1,5 +1,5 @@
 from flask_restful import Resource, reqparse
-from models.team_participant import TeamParticipantModel
+from application.models.team_participant import TeamParticipantModel
 
 
 class TeamParticipant(Resource):

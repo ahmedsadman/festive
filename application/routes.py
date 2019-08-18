@@ -1,12 +1,12 @@
 from flask import current_app as app
 from flask_restful import Api
 
-from resources.event import Event, EventList
-from resources.info import Info
-from resources.participant import Participant
-from resources.event_participant import EventParticipant
-from resources.team import Team
-from resources.team_participant import TeamParticipant
+from application.resources.event import Event, EventList
+from application.resources.info import Info
+from application.resources.participant import Participant
+from application.resources.event_participant import EventParticipant
+from application.resources.team import Team
+from application.resources.team_participant import TeamParticipant
 
 api = Api(app)
 

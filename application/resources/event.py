@@ -1,5 +1,5 @@
 from flask_restful import Resource
-from models.event import EventModel
+from application.models.event import EventModel
 from application.error_handlers import *
 
 

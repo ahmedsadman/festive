@@ -1,5 +1,5 @@
 from flask_restful import Resource, reqparse
-from models.event_participant import EventParticipantModel
+from application.models.event_participant import EventParticipantModel
 
 class EventParticipant(Resource):
     parser = reqparse.RequestParser()

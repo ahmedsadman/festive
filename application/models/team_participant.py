@@ -1,6 +1,6 @@
 from application import db
-from models.participant import ParticipantModel
-from models.team import TeamModel
+from application.models.participant import ParticipantModel
+from application.models.team import TeamModel
 
 
 class TeamParticipantModel(db.Model):
