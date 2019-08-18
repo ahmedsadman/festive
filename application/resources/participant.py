@@ -12,7 +12,7 @@ class Participant(Resource):
     def post(self):
         data = Participant.parser.parse_args()
 
-        if ParticipantModel.find(data['email']):
+        if ParticipantModel.find_by_email(data['email']):
             raise BadRequest(message='The email is already registered')
 
         participant = ParticipantModel(data['name'], data['email'], data['is_leader'], data['institute'])

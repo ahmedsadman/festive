@@ -28,8 +28,9 @@ class TeamModel(db.Model):
         db.session.commit()
 
     @classmethod
-    def find_by_name(cls, name):
-        return cls.query.filter_by(name=name).first()
+    def find(cls, name, event_id):
+        '''find a team by it's name and event id'''
+        return cls.query.filter_by(name=name, event_id=event_id).first()
 
     @classmethod
     def find_by_id(cls, id):

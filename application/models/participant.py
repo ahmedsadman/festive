@@ -35,7 +35,7 @@ class ParticipantModel(db.Model):
         db.session.commit()
 
     @classmethod
-    def find(cls, email):
+    def find_by_email(cls, email):
         return cls.query.filter_by(email=email).first()
 
     @classmethod
