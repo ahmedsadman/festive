@@ -21,14 +21,6 @@ class ParticipantModel(db.Model):
         self.is_leader = is_leader
         self.institute = institute
 
-    def json(self):
-        return {
-            'name': self.name,
-            'email': self.email,
-            'institute': self.institute,
-            'is_leader': self.is_leader
-        }
-
     def save(self):
         '''save the item to database'''
         db.session.add(self)

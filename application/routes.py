@@ -17,7 +17,7 @@ api.add_resource(Info, '/')
 # find entity by user readable data (like name, email etc)
 api.add_resource(FindParticipant, '/find/participant/<string:email>')
 api.add_resource(FindEvent, '/find/event/<string:name>')
-api.add_resource(FindTeam, '/find/team/<string:name>/<int:event_id>')
+api.add_resource(FindTeam, '/find/team')
 
 # event create/remove and event listings
 api.add_resource(EventList, '/events')
