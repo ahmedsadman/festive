@@ -6,7 +6,6 @@ class ParticipantModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(60))
     email = db.Column(db.String(30), unique=True)
-    is_leader = db.Column(db.Boolean, default=False)
     institute = db.Column(db.String(60), nullable=True)
 
     # for many to many relationship, maps user to events/teams
@@ -15,10 +14,9 @@ class ParticipantModel(db.Model):
     teams = db.relationship('TeamModel', secondary='team_participant',
                             backref=db.backref('team_members', lazy='dynamic'))
 
-    def __init__(self, name, email, is_leader=False, institute=None):
+    def __init__(self, name, email, institute=None):
         self.name = name
         self.email = email
-        self.is_leader = is_leader
         self.institute = institute
 
     def save(self):

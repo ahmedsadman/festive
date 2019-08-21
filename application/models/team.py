@@ -10,6 +10,7 @@ class TeamModel(db.Model):
     payment_status = db.Column(db.Boolean, default=False)
 
     # team_members -> backref from participant model
+    # event -> backref from event model
     
     def __init__(self, name, event_id):
         self.name = name

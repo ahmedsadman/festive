@@ -27,7 +27,7 @@ api.add_resource(Event, '/event/<string:name>')
 api.add_resource(Participant, '/participant')
 
 # teams creation and getting team info
-api.add_resource(Team, '/team/<string:name>/<int:event_id>')
+api.add_resource(Team, '/team')
 
 # map event and participant
 api.add_resource(EventParticipant, '/participate')

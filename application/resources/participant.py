@@ -16,10 +16,10 @@ class Participant(Resource):
             return err.messages, 400
 
         if ParticipantModel.find_by_email(data['email']):
-            raise BadRequest(message='The email is already registered')
+            raise BadRequest(message='The email "{}" is already registered'.format(data['email']))
 
         participant = ParticipantModel(
-            data['name'], data['email'], data['is_leader'], data['institute'])
+            data['name'], data['email'], data['institute'])
         participant.save()
-        ps = ParticipantSchema(only=('id', 'name'))
+        ps = ParticipantSchema()
         return ps.dump(participant), 201
