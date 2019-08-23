@@ -12,13 +12,13 @@ from application.schemas import TeamSchema
 
 
 class FindParticipant(Resource):
-    def get(self, email):
+    def get(self):
         '''find a participant by his email'''
-        participant = ParticipantModel.find_by_email(email)
+        ps = ParticipantSchema(partial=True)
+        data = ps.load(request.args)
+        participant = ParticipantModel.find_by_email(data['email'])
         if participant:
-            ps = ParticipantSchema()
             return ps.dump(participant)
-            # return participant.json()
         raise NotFound()
 
 

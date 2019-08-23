@@ -7,6 +7,7 @@ from application.schemas import TeamSchema
 
 class Team(Resource):
     def post(self):
+        '''Create a new team'''
         ts = TeamSchema(only=('name', 'event_id'))
         data = ts.load(request.get_json())
 
@@ -15,9 +16,3 @@ class Team(Resource):
         team = TeamModel(data['name'], data['event_id'])
         team.save()
         return team.json(), 201
-
-    def get(self, name, event_id):
-        team = TeamModel.find(name, event_id)
-        if team:
-            return team.json()
-        raise NotFound(message='Team not found')

@@ -24,6 +24,11 @@ class EventModel(db.Model):
         db.session.delete(self)
         db.session.commit()
 
+    def add_participant(self, participant):
+        '''adds a participant under the event'''
+        self.participants.append(participant)
+        db.session.commit()
+
     @classmethod
     def find_all(cls):
         return cls.query.all()
@@ -35,3 +40,10 @@ class EventModel(db.Model):
     @classmethod
     def find_by_id(cls, id):
         return cls.query.filter_by(id=id).first()
+
+    # @classmethod
+    # def find_participant(cls, email, event_id):
+    #     '''find and return the participant if he has participated in a given event'''
+    #     # return cls.query.filter_by(id=event_id).join(cls.participants).filter_by(email=email).first()
+    #     event = cls.query.filter_by(id=event_id).first()
+    #     return event.participants.filter_by(email=email).first()

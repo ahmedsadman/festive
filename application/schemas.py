@@ -4,7 +4,7 @@ from marshmallow import Schema, fields
 class EventSchema(Schema):
     class Meta:
         ordered = True
-        
+
     id = fields.Int()
     name = fields.Str(required=True)
 
@@ -15,9 +15,9 @@ class ParticipantSchema(Schema):
 
     id = fields.Int()
     name = fields.Str(required=True)
-    email = fields.Str(required=True)
-    institute = fields.Str()
-    events = fields.List(fields.Nested('EventSchema'))
+    email = fields.Email(required=True)
+    institute = fields.Str(missing=None)
+    events = fields.Pluck('EventSchema', 'name', many=True)
     teams = fields.List(fields.Nested('TeamSchema', only=('id', 'name')))
 
 
@@ -36,3 +36,9 @@ class TeamSchema(Schema):
     team_members = fields.List(fields.Nested(
         'ParticipantSchema', exclude=('teams',), only=('id', 'name')))
     event = fields.Nested('EventSchema')
+
+
+class EventRegistration(Schema):
+    participants = fields.Nested(ParticipantSchema(
+        only=('name', 'email', 'institute')), many=True)
+    event_id = fields.Int()

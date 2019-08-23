@@ -9,9 +9,9 @@ class ParticipantModel(db.Model):
     institute = db.Column(db.String(60), nullable=True)
 
     # for many to many relationship, maps user to events/teams
-    events = db.relationship('EventModel', secondary='event_participant',
+    events = db.relationship('EventModel', secondary='event_participant', lazy='dynamic',
                              backref=db.backref('participants', lazy='dynamic'))
-    teams = db.relationship('TeamModel', secondary='team_participant',
+    teams = db.relationship('TeamModel', secondary='team_participant', lazy='dynamic',
                             backref=db.backref('team_members', lazy='dynamic'))
 
     def __init__(self, name, email, institute=None):
@@ -23,6 +23,9 @@ class ParticipantModel(db.Model):
         '''save the item to database'''
         db.session.add(self)
         db.session.commit()
+
+    def has_participated_event(self, event_id):
+        return self.events.filter_by(id=event_id).first()
 
     @classmethod
     def find_by_email(cls, email):

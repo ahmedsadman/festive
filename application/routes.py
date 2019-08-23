@@ -1,7 +1,7 @@
 from flask import current_app as app
 from flask_restful import Api
 
-from application.resources.event import Event, EventList
+from application.resources.event import Event, EventList, EventRegister
 from application.resources.info import Info
 from application.resources.participant import Participant
 from application.resources.event_participant import EventParticipant
@@ -15,7 +15,7 @@ api = Api(app)
 api.add_resource(Info, '/')
 
 # find entity by user readable data (like name, email etc)
-api.add_resource(FindParticipant, '/find/participant/<string:email>')
+api.add_resource(FindParticipant, '/find/participant')
 api.add_resource(FindEvent, '/find/event/<string:name>')
 api.add_resource(FindTeam, '/find/team')
 
@@ -31,6 +31,7 @@ api.add_resource(Team, '/team')
 
 # map event and participant
 api.add_resource(EventParticipant, '/participate')
+api.add_resource(EventRegister, '/event/register/<int:event_id>')
 
 # map team and participant
 api.add_resource(TeamParticipant, '/member')
