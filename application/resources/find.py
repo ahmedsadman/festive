@@ -45,6 +45,8 @@ class FindTeam(Resource):
         if not _filter.keys(): raise NotFound()
             
         team = TeamModel.find(**_filter)
-        if team:
-            return ts.dump(team)
-        raise NotFound()
+        ts = TeamSchema(partial=True, many=True)
+        return {
+            'count': len(team),
+            'data': ts.dump(team)
+        }

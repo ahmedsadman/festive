@@ -1,4 +1,4 @@
-from marshmallow import Schema, fields
+from marshmallow import Schema, fields, validates, ValidationError
 
 
 class EventSchema(Schema):
@@ -40,5 +40,14 @@ class TeamSchema(Schema):
 
 class EventRegistration(Schema):
     participants = fields.Nested(ParticipantSchema(
-        only=('name', 'email', 'institute')), many=True)
-    event_id = fields.Int()
+        only=('name', 'email', 'institute')), many=True, required=True)
+    team_name = fields.Str(required=True)
+
+    @validates('participants')
+    def validate_participants(self, value):
+        if len(value) < 1:
+            raise ValidationError('At least one participant must exist in a team')
+
+
+    
+    

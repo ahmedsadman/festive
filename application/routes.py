@@ -4,14 +4,16 @@ from flask_restful import Api
 from application.resources.event import Event, EventList, EventRegister
 from application.resources.info import Info
 from application.resources.participant import Participant
-from application.resources.event_participant import EventParticipant
-from application.resources.team import Team
-from application.resources.team_participant import TeamParticipant
 from application.resources.find import FindParticipant, FindEvent, FindTeam
+
+# not used anywhere, but these imports are required to create the tables by sqlalchemy
+from application.resources.event_participant import EventParticipant
+from application.resources.team_participant import TeamParticipant
+
 
 api = Api(app)
 
-# root (to show basic information)
+# root (to show basic information about the api)
 api.add_resource(Info, '/')
 
 # find entity by user readable data (like name, email etc)
@@ -26,12 +28,6 @@ api.add_resource(Event, '/event/<string:name>')
 # participants create/remove/update
 api.add_resource(Participant, '/participant')
 
-# teams creation and getting team info
-api.add_resource(Team, '/team')
-
-# map event and participant
-api.add_resource(EventParticipant, '/participate')
+# event registration
 api.add_resource(EventRegister, '/event/register/<int:event_id>')
 
-# map team and participant
-api.add_resource(TeamParticipant, '/member')
