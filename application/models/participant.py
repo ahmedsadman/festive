@@ -1,4 +1,5 @@
 from application import db
+from datetime import datetime
 
 
 class ParticipantModel(db.Model):
@@ -7,6 +8,7 @@ class ParticipantModel(db.Model):
     name = db.Column(db.String(60))
     email = db.Column(db.String(30), unique=True)
     institute = db.Column(db.String(60), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.now)
 
     # for many to many relationship, maps user to events/teams
     events = db.relationship('EventModel', secondary='event_participant', lazy='dynamic',

@@ -1,4 +1,6 @@
 from application import db
+from sqlalchemy import func
+from datetime import datetime
 
 
 class TeamModel(db.Model):
@@ -8,6 +10,7 @@ class TeamModel(db.Model):
     event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
     team_identifier = db.Column(db.String(50), nullable=True) # will handle later
     payment_status = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.now)
 
     # team_members -> backref from participant model
     # event -> backref from event model
@@ -16,26 +19,31 @@ class TeamModel(db.Model):
         self.name = name
         self.event_id = event_id
 
-    def json(self):
-        return {
-            'id': self.id,
-            'name': self.name,
-            'event_id': self.event_id,
-            'payment_status': self.payment_status
-        }
-
     def save(self):
         db.session.add(self)
+        db.session.flush()
+        self.team_identifier = self._generate_identifier()
         db.session.commit()
+
+    def _generate_identifier(self):
+        # first 4 char of event name (upper) + last 4 char of timestamp + id
+        if not self.id:
+            raise ValueError('ID is not defined')
+        stamp = str(int(self.created_at.timestamp()))[-4:]
+        event_short = self.event.name.upper()[:4]
+        return event_short + stamp + repr(self.id)
 
     def add_participant(self, participant):
         self.team_members.append(participant)
         db.session.commit()
 
     @classmethod
-    def find(cls, **filter):
-        '''find a team by it's name and event id'''
-        return cls.query.filter_by(**filter).all()
+    def find(cls, _filter):
+        '''find a team by given filter'''
+        query = cls.query
+        for attr, value in _filter.items():
+            query = query.filter(func.lower(getattr(cls, attr)) == func.lower(value))
+        return query.all()
 
     @classmethod
     def find_by_id(cls, id):

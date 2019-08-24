@@ -27,6 +27,7 @@ class TeamSchema(Schema):
 
     id = fields.Str()
     name = fields.Str(required=True)
+    created_at = fields.DateTime()
     event_id = fields.Int(required=True)
     payment_status = fields.Bool()
     team_identifier = fields.Str()

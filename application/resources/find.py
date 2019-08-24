@@ -33,20 +33,20 @@ class FindEvent(Resource):
 
 class FindTeam(Resource):
     def get(self):
-        '''find a team by using filers from request arguments'''
+        '''find a team by using filters from request arguments'''
         # partial -> allow skipping of required fields
-        ts = TeamSchema(partial=('name', 'event_id'))
+        ts = TeamSchema(partial=True)
         try:
             _filter = ts.load(request.args)
         except ValidationError as err:
             return err.messages, 400
 
         # raise exception if zero argument is passed
-        if not _filter.keys(): raise NotFound()
-            
-        team = TeamModel.find(**_filter)
-        ts = TeamSchema(partial=True, many=True)
+        if not _filter.keys():
+            raise BadRequest('No query arguments passed')
+
+        team = TeamModel.find(_filter)
         return {
             'count': len(team),
-            'data': ts.dump(team)
+            'data': TeamSchema(partial=True, many=True, exclude=('team_identifier',)).dump(team)
         }

@@ -5,7 +5,7 @@ from application.models.event import EventModel
 from application.models.participant import ParticipantModel
 from application.models.team import TeamModel
 from application.error_handlers import *
-from application.schemas import EventRegistration
+from application.schemas import EventRegistration, TeamSchema
 
 
 class Event(Resource):
@@ -97,7 +97,7 @@ class EventRegister(Resource):
             event.add_participant(participant_obj)
             team.add_participant(participant_obj)
 
-        return {'message': 'Successfully added'}
+        return TeamSchema(only=('id', 'name', 'team_identifier')).dump(team), 201
 
     def create_participant(self, name, email, institute):
         participant_obj = ParticipantModel(name, email, institute)
