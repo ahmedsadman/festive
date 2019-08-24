@@ -7,8 +7,7 @@ from application.resources.participant import Participant
 from application.resources.find import FindParticipant, FindEvent, FindTeam
 
 # not used anywhere, but these imports are required to create the tables by sqlalchemy
-from application.resources.event_participant import EventParticipant
-from application.resources.team_participant import TeamParticipant
+from application.tables import event_participant, team_participant
 
 
 api = Api(app)
