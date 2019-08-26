@@ -7,6 +7,7 @@ class EventSchema(Schema):
 
     id = fields.Int()
     name = fields.Str(required=True)
+    payable_amount = fields.Int(required=True)
 
 
 class ParticipantSchema(Schema):

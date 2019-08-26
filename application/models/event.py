@@ -5,14 +5,14 @@ class EventModel(db.Model):
     __tablename__ = 'events'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
+    payable_amount = db.Column(db.Integer)
+
     teams = db.relationship('TeamModel', backref='event', lazy='dynamic')
     # participants -> backref from participant model
 
-    def __init__(self, name):
+    def __init__(self, name, payable_amount):
         self.name = name
-
-    def json(self):
-        return {'id': self.id, 'name': self.name}
+        self.payable_amount = payable_amount
 
     def save(self):
         '''save the item to database'''

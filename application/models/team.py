@@ -8,7 +8,7 @@ class TeamModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
     event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
-    team_identifier = db.Column(db.String(50), nullable=True) # will handle later
+    team_identifier = db.Column(db.String(50), nullable=True)
     payment_status = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.now)
 
