@@ -1,3 +1,5 @@
+import string
+import random
 from application import db
 from sqlalchemy import func
 from datetime import datetime
@@ -25,13 +27,17 @@ class TeamModel(db.Model):
         self.team_identifier = self._generate_identifier()
         db.session.commit()
 
+    def _random_string(self, n):
+        return ''.join(random.choices(string.ascii_uppercase + string.digits, k=n))
+
     def _generate_identifier(self):
-        # first 4 char of event name (upper) + last 4 char of timestamp + id
+        # first 4 char of event name (upper) + last 3 char of timestamp + random string of len 2 + id
         if not self.id:
             raise ValueError('ID is not defined')
-        stamp = str(int(self.created_at.timestamp()))[-4:]
-        event_short = self.event.name.upper()[:4]
-        return event_short + stamp + repr(self.id)
+        stamp = str(int(self.created_at.timestamp()))[-3:]
+        event_short = self.event.name.upper()[:4].strip()
+        random_str = self._random_string(2)
+        return event_short + stamp + random_str + repr(self.id)
 
     def add_participant(self, participant):
         self.team_members.append(participant)
