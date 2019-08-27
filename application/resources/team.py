@@ -10,7 +10,8 @@ class FindTeam(Resource):
     def get(self):
         '''find a team by using filters from request arguments'''
         # partial -> allow skipping of required fields
-        ts = TeamSchema(partial=True)
+        ts = TeamSchema(partial=True, only=(
+            'name', 'event_id', 'team_identifier'))
         try:
             _filter = ts.load(request.args)
         except ValidationError as err:

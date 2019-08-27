@@ -1,3 +1,4 @@
+from sqlalchemy import func
 from application import db
 from datetime import datetime
 
@@ -36,3 +37,12 @@ class ParticipantModel(db.Model):
     @classmethod
     def find_by_id(cls, id):
         return cls.query.filter_by(id=id).first()
+
+    @classmethod
+    def find(cls, _filter):
+        '''find participants by given filter'''
+        query = cls.query
+        for attr, value in _filter.items():
+            query = query.filter(func.lower(
+                getattr(cls, attr)) == func.lower(value))
+        return query.all()

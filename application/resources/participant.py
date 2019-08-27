@@ -6,33 +6,22 @@ from application.error_handlers import BadRequest, NotFound
 from application.schemas import ParticipantSchema
 
 
-class Participant(Resource):
-    def post(self):
-        ps = ParticipantSchema()
-
-        try:
-            data = ps.load(request.get_json())
-        except ValidationError as err:
-            return err.messages, 400
-
-        if ParticipantModel.find_by_email(data['email']):
-            raise BadRequest(
-                message='The email "{}" is already registered'.format(data['email']))
-
-        participant = ParticipantModel(
-            data['name'], data['email'], data['institute'])
-        participant.save()
-        ps = ParticipantSchema()
-        return ps.dump(participant), 201
-
-
 class FindParticipant(Resource):
     def get(self):
-        '''find a participant by his email'''
-        ps = ParticipantSchema(partial=True)
-        data = ps.load(request.args)
-        participant = ParticipantModel.find_by_email(data['email'])
+        '''find participants by query filters'''
+        ps = ParticipantSchema(partial=True, only=('name', 'email'))
+
+        try:
+            _filter = ps.load(request.args)
+        except ValidationError as err:
+            return err.messages
+
+        if not _filter.keys():
+            raise BadRequest(message='No query arguments passed')
+
+        participant = ParticipantModel.find(_filter)
         return {
-            'found': bool(participant),
-            'data': ps.dump(participant)
+            'found': len(participant) > 0,
+            'count': len(participant),
+            'data': ParticipantSchema(many=True).dump(participant)
         }
