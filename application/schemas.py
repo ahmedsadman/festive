@@ -18,8 +18,8 @@ class ParticipantSchema(Schema):
     name = fields.Str(required=True)
     email = fields.Email(required=True)
     institute = fields.Str(missing=None)
-    events = fields.Pluck('EventSchema', 'name', many=True)
-    teams = fields.List(fields.Nested('TeamSchema', only=('id', 'name')))
+    events = fields.Nested('EventSchema', only=('id', 'name'), many=True)
+    teams = fields.Nested('TeamSchema', only=('id', 'name', 'event_id'), many=True)
 
 
 class TeamSchema(Schema):
@@ -36,7 +36,7 @@ class TeamSchema(Schema):
     # because the field 'teams' itself is dependent on this TeamSchema
     team_members = fields.List(fields.Nested(
         'ParticipantSchema', exclude=('teams',), only=('id', 'name')))
-    event = fields.Nested('EventSchema')
+    event = fields.Nested('EventSchema', only=('id', 'name'))
 
 
 class EventRegistration(Schema):

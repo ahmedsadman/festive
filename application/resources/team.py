@@ -15,7 +15,7 @@ class FindTeam(Resource):
         try:
             _filter = ts.load(request.args)
         except ValidationError as err:
-            return err.messages, 400
+            raise BadRequest(message='Fields are not valid', error=err.messages)
 
         # raise exception if zero argument is passed
         if not _filter.keys():
