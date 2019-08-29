@@ -17,6 +17,7 @@ class ParticipantSchema(Schema):
     id = fields.Int()
     name = fields.Str(required=True)
     email = fields.Email(required=True)
+    contact_no = fields.Str(required=False, missing=None)
     institute = fields.Str(missing=None)
     events = fields.Nested('EventSchema', only=('id', 'name'), many=True)
     teams = fields.Nested('TeamSchema', only=('id', 'name', 'event_id'), many=True)

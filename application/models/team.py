@@ -1,11 +1,13 @@
 import string
 import random
-from application import db
 from sqlalchemy import func
 from datetime import datetime
 
+from application import db
+from application.models.basemodel import BaseModel
 
-class TeamModel(db.Model):
+
+class TeamModel(BaseModel):
     __tablename__ = 'teams'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
@@ -26,11 +28,6 @@ class TeamModel(db.Model):
         self.team_identifier = self._generate_identifier()
         db.session.commit()
 
-    def delete(self):
-        '''delete the item from database'''
-        db.session.delete(self)
-        db.session.commit()
-
     def _random_string(self, n):
         return ''.join(random.choices(string.ascii_uppercase + string.digits, k=n))
 
@@ -46,15 +43,3 @@ class TeamModel(db.Model):
     def add_participant(self, participant):
         self.team_members.append(participant)
         db.session.commit()
-
-    @classmethod
-    def find(cls, _filter):
-        '''find a team by given filter'''
-        query = cls.query
-        for attr, value in _filter.items():
-            query = query.filter(func.lower(getattr(cls, attr)) == func.lower(value))
-        return query.all()
-
-    @classmethod
-    def find_by_id(cls, id):
-        return cls.query.filter_by(id=id).first()

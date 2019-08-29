@@ -42,5 +42,5 @@ class FindParticipant(Resource):
         return {
             'found': len(participant) > 0,
             'count': len(participant),
-            'data': ParticipantSchema(many=True).dump(participant)
+            'data': ParticipantSchema(many=True, exclude=('contact_no',)).dump(participant)
         }
