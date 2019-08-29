@@ -26,6 +26,11 @@ class TeamModel(db.Model):
         self.team_identifier = self._generate_identifier()
         db.session.commit()
 
+    def delete(self):
+        '''delete the item from database'''
+        db.session.delete(self)
+        db.session.commit()
+
     def _random_string(self, n):
         return ''.join(random.choices(string.ascii_uppercase + string.digits, k=n))
 

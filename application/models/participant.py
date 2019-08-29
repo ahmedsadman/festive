@@ -27,6 +27,11 @@ class ParticipantModel(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def delete(self):
+        '''delete the item from database'''
+        db.session.delete(self)
+        db.session.commit()
+
     def has_participated_event(self, event_id):
         return self.events.filter_by(id=event_id).first()
 

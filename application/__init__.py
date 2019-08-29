@@ -15,6 +15,7 @@ def create_app():
     # register error handler
     @app.errorhandler(BadRequest)
     @app.errorhandler(NotFound)
+    @app.errorhandler(FieldValidationFailed)
     @app.errorhandler(ServerError)
     def handle_request_error(error):
         return error.to_dict(), error.status

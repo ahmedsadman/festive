@@ -6,6 +6,25 @@ from application.error_handlers import BadRequest, NotFound
 from application.schemas import ParticipantSchema
 
 
+class Participant(Resource):
+    def get(self, participant_id):
+        ps = ParticipantSchema()
+        participant = ParticipantModel.find_by_id(participant_id)
+
+        if participant:
+            return ps.dump(participant)
+        raise NotFound
+
+    def delete(self, participant_id):
+        ps = ParticipantSchema(partial=True)
+        participant = ParticipantModel.find_by_id(participant_id)
+        
+        if participant:
+            participant.delete()
+            return {'message': 'Successfully deleted'}
+        raise NotFound()
+        
+
 class FindParticipant(Resource):
     def get(self):
         '''find participants by query filters'''
