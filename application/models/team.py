@@ -12,7 +12,7 @@ class TeamModel(BaseModel):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
     event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
-    team_identifier = db.Column(db.String(50), nullable=True)
+    team_identifier = db.Column(db.String(50), nullable=True, unique=True, index=True)
     created_at = db.Column(db.DateTime, default=datetime.now)
 
     # team_members -> backref from participant model

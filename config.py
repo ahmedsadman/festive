@@ -5,7 +5,7 @@ class Config:
     '''holds all the configuration for the flask application'''
 
     # general config
-    SECRET_KEY = 'mysecretkeytest'
+    SECRET_KEY = os.environ.get('FLASK_SECRET_KEY', 'mysecretkeytest')
     PROPAGATE_EXCEPTIONS = True
 
     # database

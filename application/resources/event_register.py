@@ -22,6 +22,8 @@ class EventRegister(Resource):
             return err.messages, 400
 
         event = EventModel.find_by_id(event_id)
+        if not event:
+            raise NotFound(message='The event does not exist')
 
         # validate the participants
         # only validate or create participants in this portion. Participant should not be added
