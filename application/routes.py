@@ -4,6 +4,7 @@ from flask_restful import Api
 from application.resources.event import EventCreate, EventList, Event
 from application.resources.event_register import EventRegister
 from application.resources.team import FindTeam, Team
+from application.resources.payment import Payment
 from application.resources.info import Info
 from application.resources.participant import FindParticipant, Participant
 
@@ -28,6 +29,9 @@ api.add_resource(Participant, '/participant/<int:participant_id>')
 
 # teams
 api.add_resource(Team, '/team/<int:team_id>')
+
+# payment
+api.add_resource(Payment, '/payment')
 
 # find entity by user readable data (like name, email etc)
 api.add_resource(FindParticipant, '/find/participant')
