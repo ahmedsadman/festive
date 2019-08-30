@@ -1,16 +1,19 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from config import Config
 from application.error_handlers import *
 
 # globally accessible variables
 db = SQLAlchemy()
+migrate = Migrate()
 
 def create_app():
     '''Create the core application, uses application factory pattern'''
     app = Flask(__name__)
     app.config.from_object(Config)
     db.init_app(app)
+    migrate.init_app(app, db)
 
     # register error handler
     @app.errorhandler(BadRequest)
