@@ -33,6 +33,16 @@ class NotFound(BaseError):
         self.status = 404
 
 
+class AuthorizationError(BaseError):
+    INVALID_CRED = 'INVALID_CREDENTIALS'
+    INVALID_TOKEN = 'INVALID_TOKEN'
+    EXPIRED = 'TOKEN_EXPIRED'
+
+    def __init__(self, message='Unauthorized', error=None):
+        super().__init__(message, error)
+        self.status = 401
+
+
 class ServerError(BaseError):
     def __init__(self, message='Internal server error', error=None):
         super().__init__(message, error)

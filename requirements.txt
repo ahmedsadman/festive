@@ -3,6 +3,7 @@ aniso8601==7.0.0
 autopep8==1.4.4
 Click==7.0
 Flask==1.1.1
+Flask-JWT-Extended==3.22.0
 Flask-Migrate==2.5.2
 Flask-RESTful==0.3.7
 Flask-SQLAlchemy==2.4.0
@@ -13,6 +14,7 @@ MarkupSafe==1.1.1
 marshmallow==3.0.0
 psycopg2==2.8.3
 pycodestyle==2.5.0
+PyJWT==1.7.1
 python-dateutil==2.8.0
 python-dotenv==0.10.3
 python-editor==1.0.4

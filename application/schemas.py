@@ -10,6 +10,15 @@ class EventSchema(Schema):
     payable_amount = fields.Int(required=True)
 
 
+class UserSchema(Schema):
+    class Meta:
+        ordered = True
+
+    id = fields.Int()
+    username = fields.Str(required=True)
+    password = fields.Str(required=True)
+
+
 class ParticipantSchema(Schema):
     class Meta:
         ordered = True
@@ -31,7 +40,8 @@ class PaymentSchema(Schema):
     id = fields.Int()
     team_id = fields.Int()
     status = fields.Bool()
-    transaction_no = fields.Str(validate=[validate.Length(min=5), validate.Regexp('^[a-zA-Z0-9]+$')])
+    transaction_no = fields.Str(
+        validate=[validate.Length(min=5), validate.Regexp('^[a-zA-Z0-9]+$')])
     created_on = fields.DateTime()
     updated_on = fields.DateTime()
 

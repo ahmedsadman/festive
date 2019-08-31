@@ -2,6 +2,7 @@ from flask import current_app as app
 from flask_restful import Api
 
 from application.resources.event import EventCreate, EventList, Event
+from application.resources.auth import Register, Login
 from application.resources.event_register import EventRegister
 from application.resources.team import FindTeam, Team
 from application.resources.payment import Payment, PaymentVerify
@@ -15,6 +16,10 @@ api = Api(app)
 
 # root (to show basic information about the api)
 api.add_resource(Info, '/')
+
+# user auth
+api.add_resource(Register, '/user/register')
+api.add_resource(Login, '/user/login')
 
 # event create/remove and event listings
 api.add_resource(EventCreate, '/event/create')
