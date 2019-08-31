@@ -5,6 +5,7 @@ from flask_restful import Resource
 from marshmallow import ValidationError
 from application.error_handlers import *
 
+
 class Team(Resource):
     def get(self, team_id):
         ts = TeamSchema(partial=True)
@@ -20,7 +21,7 @@ class Team(Resource):
             return {'message': 'Successfully deleted'}
         raise NotFound()
 
-        
+
 class FindTeam(Resource):
     def get(self):
         '''find a team by using filters from request arguments'''
@@ -40,5 +41,5 @@ class FindTeam(Resource):
         return {
             'found': len(team) > 0,
             'count': len(team),
-            'data': TeamSchema(partial=True, many=True, exclude=('team_identifier',)).dump(team)
+            'data': TeamSchema(partial=True, many=True, exclude=('team_identifier', 'payment.transaction_no')).dump(team)
         }

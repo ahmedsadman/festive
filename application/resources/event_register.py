@@ -3,6 +3,7 @@ from flask_restful import Resource
 from application.models.event import EventModel
 from application.models.participant import ParticipantModel
 from application.models.team import TeamModel
+from application.models.payment import PaymentModel
 from application.error_handlers import *
 from application.schemas import EventRegistration, TeamSchema, EventSchema
 
@@ -48,6 +49,9 @@ class EventRegister(Resource):
         # create a team
         team = self.create_team(data['team_name'], event_id)
 
+        # create a payment record for the corresponding team
+        payment = self.create_payment(team.id)
+        
         # add participants to the corresponding team and event
         for participant in data['participants']:
             participant_obj = ParticipantModel.find_by_email(
@@ -66,3 +70,8 @@ class EventRegister(Resource):
         team = TeamModel(name, event_id)
         team.save()
         return team
+
+    def create_payment(self, team_id):
+        payment = PaymentModel(team_id)
+        payment.save()
+        return payment

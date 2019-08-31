@@ -1,7 +1,7 @@
 import string
 import random
-from sqlalchemy import func
 from datetime import datetime
+from sqlalchemy import func
 
 from application import db
 from application.models.basemodel import BaseModel
@@ -13,7 +13,11 @@ class TeamModel(BaseModel):
     name = db.Column(db.String(50))
     event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
     team_identifier = db.Column(db.String(50), nullable=True, unique=True, index=True)
-    created_at = db.Column(db.DateTime, default=datetime.now)
+    # here we can't use db.func() or server_default for time generation, because in team
+    # identity generation we are using obj.timestamp(), which can only be done via python
+    # datetime module
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    payment = db.relationship('PaymentModel', backref='team', uselist=False)
 
     # team_members -> backref from participant model
     # event -> backref from event model
