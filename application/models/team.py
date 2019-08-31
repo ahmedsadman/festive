@@ -47,3 +47,7 @@ class TeamModel(BaseModel):
     def add_participant(self, participant):
         self.team_members.append(participant)
         db.session.commit()
+
+    @classmethod
+    def find_by_identifier(cls, identifier):
+        return cls.query.filter_by(team_identifier=identifier).first()

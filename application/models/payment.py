@@ -1,3 +1,4 @@
+from datetime import datetime
 from application import db
 from application.models.basemodel import BaseModel
 
@@ -10,8 +11,8 @@ class PaymentModel(BaseModel):
     transaction_no = db.Column(db.String(50), nullable=True)
     status = db.Column(db.Boolean, default=False)
 
-    created_on = db.Column(db.DateTime, server_default=db.func.now())
-    updated_on = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
+    created_on = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_on = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     # team -> backref from payment model
 
