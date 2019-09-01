@@ -27,8 +27,9 @@ class BaseModel(db.Model):
         return cls.query.filter_by(id=id).first()
 
     @classmethod
-    def find(cls, _filter):
-        '''find entities by given filter'''
+    def find_query(cls, _filter):
+        '''Build the query with the given level one filters (filters that has direct match with entity 
+        attributes, not any nested relationship). Returns 'query' object'''
         query = cls.query
         for attr, value in _filter.items():
             # func.lower doesn't work for INT types in some production databases, so this should be properly handled
@@ -39,4 +40,9 @@ class BaseModel(db.Model):
             _attr = _attr if (type(value) == int) else func.lower(_attr)
             _value = value if (type(value) == int) else func.lower(value)
             query = query.filter(_attr == _value)
-        return query.all()
+        return query
+
+    @classmethod
+    def find(cls, _filter):
+        '''find all entities by given filter'''
+        return cls.find_query(_filter).all()

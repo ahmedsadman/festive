@@ -39,7 +39,7 @@ class PaymentSchema(Schema):
 
     id = fields.Int()
     team_id = fields.Int()
-    status = fields.Bool()
+    status = fields.Str()
     transaction_no = fields.Str(
         validate=[validate.Length(min=5), validate.Regexp('^[a-zA-Z0-9]+$')])
     created_on = fields.DateTime()
@@ -56,6 +56,7 @@ class TeamSchema(Schema):
     event_id = fields.Int(required=True)
     team_identifier = fields.Str()
     payment = fields.Nested('PaymentSchema', exclude=('id', 'team_id'))
+    payment_status = fields.Str(load_only=True, validate=validate.OneOf(['pending', 'waiting', 'ok']))
 
     # the 'teams' field should be excluded to avoid recursion error
     # because the field 'teams' itself is dependent on this TeamSchema

@@ -13,9 +13,6 @@ class TeamModel(BaseModel):
     name = db.Column(db.String(50))
     event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
     team_identifier = db.Column(db.String(50), nullable=True, unique=True, index=True)
-    # here we can't use db.func() or server_default for time generation, because in team
-    # identity generation we are using obj.timestamp(), which can only be done via python
-    # datetime module
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     payment = db.relationship('PaymentModel', backref='team', uselist=False)
 
@@ -51,3 +48,19 @@ class TeamModel(BaseModel):
     @classmethod
     def find_by_identifier(cls, identifier):
         return cls.query.filter_by(team_identifier=identifier).first()
+
+    @classmethod
+    def find(cls, _filter):
+        # -- first remove any relationship based filters so that normal filtering can be done at first --
+        # payment_status requires realtionship attribute and requires different query.
+        # So remove it from filters and store it in other place to process later
+        payment_status = _filter.pop('payment_status', None)
+
+        # now the filters has only level one query attribute, build the simple query
+        query = super().find_query(_filter)
+
+        # now process any relationship filter if available
+        if payment_status is not None:
+            query = query.join(cls.payment).filter_by(status=payment_status)
+
+        return query.all()

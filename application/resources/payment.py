@@ -30,6 +30,7 @@ class Payment(Resource):
                 message='The team has already requested for payment verification')
 
         payment.transaction_no = data['transaction_no']
+        payment.status = PaymentModel.PAYMENT_WAITING
         payment.save()
         return {'message': 'Success'}
 
@@ -45,7 +46,7 @@ class PaymentVerify(Resource):
         payment = team.payment
 
         if payment.transaction_no:
-            payment.status = True
+            payment.status = PaymentModel.PAYMENT_OK
             payment.save()
             return {'message': 'Payment verified'}
 
