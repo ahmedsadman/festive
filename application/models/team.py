@@ -1,7 +1,7 @@
 import string
 import random
 from datetime import datetime
-from sqlalchemy import func
+from sqlalchemy import func, desc
 
 from application import db
 from application.models.basemodel import BaseModel
@@ -65,10 +65,15 @@ class TeamModel(BaseModel):
 
     @classmethod
     def find(cls, _filter):
+        '''find team(s) based on filter data. returns pagination object'''
+
         # -- first remove any relationship based filters so that normal filtering can be done at first --
         # payment_status requires realtionship attribute and requires different query.
         # So remove it from filters and store it in other place to process later
         payment_status = _filter.pop('payment_status', None)
+
+        # seperate non-filter arguments (like pagination arguments)
+        page = _filter.pop('page', 1)
 
         # now the filters has only level one query attribute, build the simple query
         query = super().find_query(_filter)
@@ -77,4 +82,5 @@ class TeamModel(BaseModel):
         if payment_status is not None:
             query = query.join(cls.payment).filter_by(status=payment_status)
 
-        return query.all()
+        # finally return pagination object, sorted descending
+        return query.order_by(desc(cls.created_at)).paginate(page=page, per_page=10, error_out=True)

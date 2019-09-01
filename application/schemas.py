@@ -1,6 +1,27 @@
 from marshmallow import Schema, fields, validates, validate, validates_schema, ValidationError
 
 
+class PaginatedResponse:
+    '''Show paginated response in a proper format. Not an actual schema, because it will be
+    only used to dump data.'''
+
+    def __init__(self, paginated, schema):
+        self.paginated = paginated
+        self.schema = schema
+        self.items = self.schema.dump(self.paginated.items)
+
+    def dump(self):
+        if type(self.items) != list:
+            raise ValidationError('The schema should be a list object. Use many=True in schema')
+        return {
+            'total': self.paginated.total,
+            'page': self.paginated.page,
+            'has_prev': self.paginated.has_prev,
+            'has_next': self.paginated.has_next,
+            'data': self.items
+        }
+
+
 class BaseSchema(Schema):
     class Meta:
         ordered = True
@@ -71,4 +92,5 @@ class EventRegistration(BaseSchema):
     def check_single(self, data, **kwargs):
         '''validate that 'single' field is consistent with participant length'''
         if data['single'] and len(data['participants']) > 1:
-            raise ValidationError('Only one participant should exist when single=True')
+            raise ValidationError(
+                'Only one participant should exist when single=True')

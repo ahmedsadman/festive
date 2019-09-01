@@ -3,7 +3,7 @@ from flask_restful import Resource
 from marshmallow import ValidationError
 from flask_jwt_extended import jwt_required
 
-from application.schemas import TeamSchema
+from application.schemas import TeamSchema, PaginatedResponse
 from application.models.team import TeamModel
 from application.error_handlers import *
 
@@ -31,7 +31,7 @@ class FindTeam(Resource):
         '''find a team by using filters from request arguments'''
         # partial -> allow skipping of required fields
         ts = TeamSchema(partial=True, only=(
-            'name', 'event_id', 'team_identifier', 'payment_status', 'single'))
+            'name', 'event_id', 'team_identifier', 'payment_status', 'single', 'page'))
         try:
             _filter = ts.load(request.args)
         except ValidationError as err:
@@ -41,8 +41,7 @@ class FindTeam(Resource):
         if not _filter.keys():
             raise BadRequest('No query arguments passed')
 
-        team = TeamModel.find(_filter)
-        return {
-            'count': len(team),
-            'data': TeamSchema(partial=True, many=True, exclude=('team_identifier', 'payment.transaction_no')).dump(team)
-        }
+        team_paginated = TeamModel.find(_filter)  # returns pagination obj
+        pagination_response = PaginatedResponse(team_paginated, TeamSchema(
+            partial=True, many=True, exclude=('team_identifier', 'payment.transaction_no')))
+        return pagination_response.dump()
