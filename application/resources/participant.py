@@ -1,12 +1,15 @@
 from flask import request
 from marshmallow import ValidationError
 from flask_restful import Resource
+from flask_jwt_extended import jwt_required
+
 from application.models.participant import ParticipantModel
 from application.error_handlers import BadRequest, NotFound
 from application.schemas import ParticipantSchema
 
 
 class Participant(Resource):
+    @jwt_required
     def get(self, participant_id):
         ps = ParticipantSchema()
         participant = ParticipantModel.find_by_id(participant_id)
@@ -15,6 +18,7 @@ class Participant(Resource):
             return ps.dump(participant)
         raise NotFound
 
+    @jwt_required
     def delete(self, participant_id):
         ps = ParticipantSchema(partial=True)
         participant = ParticipantModel.find_by_id(participant_id)
@@ -40,7 +44,6 @@ class FindParticipant(Resource):
 
         participant = ParticipantModel.find(_filter)
         return {
-            'found': len(participant) > 0,
             'count': len(participant),
             'data': ParticipantSchema(many=True, exclude=('contact_no',)).dump(participant)
         }

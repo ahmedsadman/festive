@@ -10,11 +10,12 @@ db = SQLAlchemy()
 migrate = Migrate()
 jwt = JWTManager()
 
+
 def create_app():
     '''Create the core application, uses application factory pattern'''
     app = Flask(__name__)
     app.config.from_object(Config)
-    
+
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
@@ -26,6 +27,6 @@ def create_app():
 
     with app.app_context():
         from . import routes
-        
+
         db.create_all()
         return app

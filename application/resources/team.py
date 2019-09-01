@@ -1,12 +1,15 @@
 from flask import request
-from application.schemas import TeamSchema
-from application.models.team import TeamModel
 from flask_restful import Resource
 from marshmallow import ValidationError
+from flask_jwt_extended import jwt_required
+
+from application.schemas import TeamSchema
+from application.models.team import TeamModel
 from application.error_handlers import *
 
 
 class Team(Resource):
+    @jwt_required
     def get(self, team_id):
         ts = TeamSchema(partial=True)
         team = TeamModel.find_by_id(team_id)
@@ -14,6 +17,7 @@ class Team(Resource):
             return ts.dump(team)
         raise NotFound()
 
+    @jwt_required
     def delete(self, team_id):
         team = TeamModel.find_by_id(team_id)
         if team:
@@ -39,7 +43,6 @@ class FindTeam(Resource):
 
         team = TeamModel.find(_filter)
         return {
-            'found': len(team) > 0,
             'count': len(team),
             'data': TeamSchema(partial=True, many=True, exclude=('team_identifier', 'payment.transaction_no')).dump(team)
         }

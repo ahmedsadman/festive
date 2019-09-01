@@ -1,6 +1,8 @@
 from flask import request
 from flask_restful import Resource
 from marshmallow import ValidationError
+from flask_jwt_extended import jwt_required
+
 from application.models.event import EventModel
 from application.models.participant import ParticipantModel
 from application.models.team import TeamModel
@@ -9,6 +11,7 @@ from application.schemas import EventRegistration, TeamSchema, EventSchema
 
 
 class Event(Resource):
+    @jwt_required
     def get(self, event_id):
         es = EventSchema()
         event = EventModel.find_by_id(event_id)
@@ -16,6 +19,7 @@ class Event(Resource):
             return es.dump(event)
         raise NotFound()
 
+    @jwt_required
     def patch(self, event_id):
         es = EventSchema(only=('name', 'payable_amount'), partial=True)
         data = es.load(request.get_json())
@@ -28,6 +32,7 @@ class Event(Resource):
             return {'message': 'Event data updated'}
         raise NotFound()
 
+    @jwt_required
     def delete(self, event_id):
         event = EventModel.find_by_id(event_id)
         if event:
@@ -36,8 +41,8 @@ class Event(Resource):
         raise NotFound()
 
 
-
 class EventCreate(Resource):
+    @jwt_required
     def post(self):
         '''create a new event with the given name'''
         es = EventSchema()

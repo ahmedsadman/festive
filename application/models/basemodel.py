@@ -7,7 +7,7 @@ class BaseModel(db.Model):
     __abstract__ = True
 
     def save(self):
-        '''delete the item from database'''
+        '''save the item to database'''
         try:
             db.session.add(self)
             db.session.commit()
@@ -28,7 +28,7 @@ class BaseModel(db.Model):
 
     @classmethod
     def find(cls, _filter):
-        '''find a team by given filter'''
+        '''find entities by given filter'''
         query = cls.query
         for attr, value in _filter.items():
             # func.lower doesn't work for INT types in some production databases, so this should be properly handled

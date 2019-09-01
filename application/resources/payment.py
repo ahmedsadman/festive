@@ -1,6 +1,8 @@
 from flask import request
 from marshmallow import ValidationError
 from flask_restful import Resource
+from flask_jwt_extended import jwt_required
+
 from application.models.payment import PaymentModel
 from application.schemas import PaymentSchema
 from application.models.team import TeamModel
@@ -34,17 +36,17 @@ class Payment(Resource):
 
 class PaymentVerify(Resource):
     '''Verify payment of participants from admin side'''
+    @jwt_required
     def post(self, team_id):
         team = TeamModel.find_by_id(team_id)
         if not team:
             raise NotFound(message='The team was not found')
-        
+
         payment = team.payment
 
         if payment.transaction_no:
             payment.status = True
             payment.save()
             return {'message': 'Payment verified'}
-        
+
         raise BadRequest(message='No transaction found for the given team')
-        

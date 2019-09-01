@@ -39,7 +39,7 @@ class Login(Resource):
 
         # match password and then send access token if valid
         if user and user.check_password(data['password']):
-            expires = timedelta(hours=1) # token will expire after 1 hour
+            expires = timedelta(days=1) # token will expire after 1 day
             access_token = create_access_token(identity=user.id, fresh=True, expires_delta=expires)
             return {'access_token': access_token}
         raise AuthorizationError(message='Invalid credentials', error=AuthorizationError.INVALID_CRED)
