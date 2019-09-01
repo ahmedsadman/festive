@@ -31,14 +31,16 @@ class BaseModel(db.Model):
         '''Build the query with the given level one filters (filters that has direct match with entity 
         attributes, not any nested relationship). Returns 'query' object'''
         query = cls.query
+        exclude_lower = [int, bool]
+
         for attr, value in _filter.items():
-            # func.lower doesn't work for INT types in some production databases, so this should be properly handled
+            # func.lower doesn't work for INT/BOOL types in some production databases, so this should be properly handled
             # ex: lower(event.id) won't work because event.id is INT type
             # So the logic is, whenever the passed 'value' in this scope is INT, it means
             # we don't need to lower anything. Just compare the vanilla value
             _attr = getattr(cls, attr)
-            _attr = _attr if (type(value) == int) else func.lower(_attr)
-            _value = value if (type(value) == int) else func.lower(value)
+            _attr = _attr if (type(value) in exclude_lower) else func.lower(_attr)
+            _value = value if (type(value) in exclude_lower) else func.lower(value)
             query = query.filter(_attr == _value)
         return query
 

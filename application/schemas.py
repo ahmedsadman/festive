@@ -1,29 +1,25 @@
-from marshmallow import Schema, fields, validates, validate, ValidationError
+from marshmallow import Schema, fields, validates, validate, validates_schema, ValidationError
 
 
-class EventSchema(Schema):
+class BaseSchema(Schema):
     class Meta:
         ordered = True
 
-    id = fields.Int()
+    id = fields.Int(dump_only=True)
+    page = fields.Int(load_only=True)
+
+
+class EventSchema(BaseSchema):
     name = fields.Str(required=True)
     payable_amount = fields.Int(required=True)
 
 
-class UserSchema(Schema):
-    class Meta:
-        ordered = True
-
-    id = fields.Int()
+class UserSchema(BaseSchema):
     username = fields.Str(required=True)
     password = fields.Str(required=True)
 
 
-class ParticipantSchema(Schema):
-    class Meta:
-        ordered = True
-
-    id = fields.Int()
+class ParticipantSchema(BaseSchema):
     name = fields.Str(required=True)
     email = fields.Email(required=True)
     contact_no = fields.Str(required=False, missing=None)
@@ -33,11 +29,7 @@ class ParticipantSchema(Schema):
         'id', 'name', 'event_id'), many=True)
 
 
-class PaymentSchema(Schema):
-    class Meta:
-        ordered = True
-
-    id = fields.Int()
+class PaymentSchema(BaseSchema):
     team_id = fields.Int()
     status = fields.Str()
     transaction_no = fields.Str(
@@ -46,17 +38,15 @@ class PaymentSchema(Schema):
     updated_on = fields.DateTime()
 
 
-class TeamSchema(Schema):
-    class Meta:
-        ordered = True
-
-    id = fields.Str()
+class TeamSchema(BaseSchema):
     name = fields.Str(required=True)
+    single = fields.Bool()
     created_at = fields.DateTime()
     event_id = fields.Int(required=True)
     team_identifier = fields.Str()
     payment = fields.Nested('PaymentSchema', exclude=('id', 'team_id'))
-    payment_status = fields.Str(load_only=True, validate=validate.OneOf(['pending', 'waiting', 'ok']))
+    payment_status = fields.Str(
+        load_only=True, validate=validate.OneOf(['pending', 'waiting', 'ok']))
 
     # the 'teams' field should be excluded to avoid recursion error
     # because the field 'teams' itself is dependent on this TeamSchema
@@ -65,13 +55,20 @@ class TeamSchema(Schema):
     event = fields.Nested('EventSchema', only=('id', 'name'))
 
 
-class EventRegistration(Schema):
+class EventRegistration(BaseSchema):
     participants = fields.Nested(ParticipantSchema(
         only=('name', 'email', 'institute')), many=True, required=True)
     team_name = fields.Str(required=True)
+    single = fields.Bool(required=True)
 
     @validates('participants')
     def validate_participants(self, value):
-        if len(value) < 1:
+        if len(value) == 0:
             raise ValidationError(
                 'At least one participant must exist in a team')
+
+    @validates_schema
+    def check_single(self, data, **kwargs):
+        '''validate that 'single' field is consistent with participant length'''
+        if data['single'] and len(data['participants']) > 1:
+            raise ValidationError('Only one participant should exist when single=True')

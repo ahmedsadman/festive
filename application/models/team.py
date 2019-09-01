@@ -8,19 +8,33 @@ from application.models.basemodel import BaseModel
 
 
 class TeamModel(BaseModel):
+    '''Model for Teams. In any fest, there are some events where people participate as teams,
+    for example 'Hackthon' or 'Programming Contest'. Again there are some events, where single 
+    participation is expected, such as 'Math Olympiads'. Whether single participant 
+    or multiple participants, all of them are considered as a team. Only difference is, if single
+    participant is expected, just set the 'single' value to true, which says that the team is a
+    pseudo-team and should contain only one member. For this case, team name should be the
+    participant's name'''
+
     __tablename__ = 'teams'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
+
+    # indicates whether a team should consist of only one member
+    single = db.Column(db.Boolean, default=False)
+
     event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
-    team_identifier = db.Column(db.String(50), nullable=True, unique=True, index=True)
+    team_identifier = db.Column(
+        db.String(50), nullable=True, unique=True, index=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     payment = db.relationship('PaymentModel', backref='team', uselist=False)
 
     # team_members -> backref from participant model
     # event -> backref from event model
-    
-    def __init__(self, name, event_id):
+
+    def __init__(self, name, single, event_id):
         self.name = name
+        self.single = single
         self.event_id = event_id
 
     def save(self):

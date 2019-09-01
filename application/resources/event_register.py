@@ -1,5 +1,7 @@
 from flask import request
 from flask_restful import Resource
+from marshmallow import ValidationError
+
 from application.models.event import EventModel
 from application.models.participant import ParticipantModel
 from application.models.team import TeamModel
@@ -47,7 +49,7 @@ class EventRegister(Resource):
         # at this point, all participants are valid.
 
         # create a team
-        team = self.create_team(data['team_name'], event_id)
+        team = self.create_team(data['team_name'], data['single'], event_id)
 
         # create a payment record for the corresponding team
         payment = self.create_payment(team.id)
@@ -66,8 +68,8 @@ class EventRegister(Resource):
         participant_obj.save()
         return participant_obj
 
-    def create_team(self, name, event_id):
-        team = TeamModel(name, event_id)
+    def create_team(self, name, single, event_id):
+        team = TeamModel(name, single, event_id)
         team.save()
         return team
 
