@@ -41,10 +41,10 @@ class UserSchema(BaseSchema):
 
 
 class ParticipantSchema(BaseSchema):
-    name = fields.Str(required=True)
-    email = fields.Email(required=True)
-    contact_no = fields.Str(required=False, missing=None)
-    institute = fields.Str(missing=None)
+    name = fields.Str(required=True, validate=validate.Length(max=60))
+    email = fields.Email(required=True, validate=validate.Length(max=60))
+    contact_no = fields.Str(required=False, missing=None, validate=validate.Length(max=30))
+    institute = fields.Str(missing=None, validate=validate.Length(max=60))
     events = fields.Nested('EventSchema', only=('id', 'name'), many=True)
     teams = fields.Nested('TeamSchema', only=(
         'id', 'name', 'event_id'), many=True)
@@ -79,7 +79,7 @@ class TeamSchema(BaseSchema):
 class EventRegistration(BaseSchema):
     participants = fields.Nested(ParticipantSchema(
         only=('name', 'email', 'institute')), many=True, required=True)
-    team_name = fields.Str(required=True)
+    team_name = fields.Str(required=True, validate=validate.Length(max=50))
     single = fields.Bool(required=True)
 
     @validates('participants')
