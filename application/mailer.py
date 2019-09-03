@@ -5,17 +5,42 @@ from sendgrid.helpers.mail import Mail
 
 class Mailer:
     '''Send emails to a participant using SendGrid API'''
-    def __init__(self):
-        self.message = None
 
-    def send_participation_mail(self, mail, identifier):
-        self.message = Mail(
-            from_email='ahmedsadman.211@gmail.com',
-            to_emails=mail,
-            subject='SendGrid ICT FEST',
-            html_content='''<strong>Thanks for your participation</strong><br>
+    def __init__(self):
+        self.message = {
+            'personalizations': [
+                {
+                    'to': [
+                        {
+                            'email': None
+                        }
+                    ],
+                    'subject': 'Confirmation of participation'
+                }
+            ],
+            'from': {
+                'email': 'ahmedsadman.211@gmail.com',
+                'name': 'ICT Fest 2020'
+            },
+            'content': [
+                {
+                    'type': 'text/html',
+                    'value': None
+                }
+            ]
+        }
+
+    def _set_email(self, email):
+        self.message['personalizations'][0]['to'][0]['email'] = email
+
+    def _set_html_content(self, content):
+        self.message['content'][0]['value'] = content
+
+    def send_participation_mail(self, email, identifier):
+        html_content = '''<strong>Thanks for your participation</strong><br>
             Your team identifier is: <strong>{}</strong>'''.format(identifier)
-        )
+        self._set_email(email)
+        self._set_html_content(html_content)
         self._send()
 
     def _send(self):
@@ -26,5 +51,3 @@ class Mailer:
             print(response.body)
         except Exception as e:
             print(e)
-
-    
