@@ -8,6 +8,7 @@ from application.models.team import TeamModel
 from application.models.payment import PaymentModel
 from application.error_handlers import *
 from application.schemas import EventRegistration, TeamSchema, EventSchema
+from application.mailer import Mailer
 
 
 class EventRegister(Resource):
@@ -60,6 +61,10 @@ class EventRegister(Resource):
                 participant['email'])
             event.add_participant(participant_obj)
             team.add_participant(participant_obj)
+
+        # send participation email to the first participant
+        mailer = Mailer()
+        mailer.send_participation_mail(data['participants'][0]['email'], team.team_identifier)
 
         return TeamSchema(only=('id', 'name', 'team_identifier')).dump(team), 201
 

@@ -26,7 +26,6 @@ class BaseSchema(Schema):
         ordered = True
 
     id = fields.Int(dump_only=True)
-    event_id = fields.Int(load_only=True)
     page = fields.Int(load_only=True)
 
 
@@ -46,6 +45,7 @@ class ParticipantSchema(BaseSchema):
     contact_no = fields.Str(required=False, missing=None, validate=validate.Length(max=30))
     institute = fields.Str(missing=None, validate=validate.Length(max=60))
     events = fields.Nested('EventSchema', only=('id', 'name'), many=True)
+    event_id = fields.Int(load_only=True)
     teams = fields.Nested('TeamSchema', only=(
         'id', 'name', 'event_id'), many=True)
 
