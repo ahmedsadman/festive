@@ -5,7 +5,7 @@ from flask_jwt_extended import jwt_required
 
 from application.models.participant import ParticipantModel
 from application.error_handlers import BadRequest, NotFound
-from application.schemas import ParticipantSchema
+from application.schemas import ParticipantSchema, PaginatedResponse
 
 
 class Participant(Resource):
@@ -22,17 +22,17 @@ class Participant(Resource):
     def delete(self, participant_id):
         ps = ParticipantSchema(partial=True)
         participant = ParticipantModel.find_by_id(participant_id)
-        
+
         if participant:
             participant.delete()
             return {'message': 'Successfully deleted'}
         raise NotFound()
-        
+
 
 class FindParticipant(Resource):
     def get(self):
         '''find participants by query filters'''
-        ps = ParticipantSchema(partial=True, only=('name', 'email'))
+        ps = ParticipantSchema(partial=True, only=('name', 'email', 'event_id', 'page'))
 
         try:
             _filter = ps.load(request.args)
@@ -42,8 +42,7 @@ class FindParticipant(Resource):
         if not _filter.keys():
             raise BadRequest(message='No query arguments passed')
 
-        participant = ParticipantModel.find(_filter)
-        return {
-            'count': len(participant),
-            'data': ParticipantSchema(many=True, exclude=('contact_no',)).dump(participant)
-        }
+        participant_paginated = ParticipantModel.find(_filter)
+        pagination_response = PaginatedResponse(participant_paginated, ParticipantSchema(
+            many=True, exclude=('contact_no',)))
+        return pagination_response.dump()

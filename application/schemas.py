@@ -7,8 +7,7 @@ class PaginatedResponse:
 
     def __init__(self, paginated, schema):
         self.paginated = paginated
-        self.schema = schema
-        self.items = self.schema.dump(self.paginated.items)
+        self.items = schema.dump(self.paginated.items)
 
     def dump(self):
         if type(self.items) != list:
@@ -27,6 +26,7 @@ class BaseSchema(Schema):
         ordered = True
 
     id = fields.Int(dump_only=True)
+    event_id = fields.Int(load_only=True)
     page = fields.Int(load_only=True)
 
 
