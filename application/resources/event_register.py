@@ -64,7 +64,7 @@ class EventRegister(Resource):
 
         # send participation email to the first participant
         mailer = Mailer()
-        mailer.send_participation_mail(data['participants'][0]['email'], team.team_identifier)
+        mailer.send_participation_mail(data['participants'][0]['email'], event, team.team_identifier)
 
         return TeamSchema(only=('id', 'name', 'team_identifier')).dump(team), 201
 

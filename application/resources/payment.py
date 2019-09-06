@@ -6,6 +6,7 @@ from flask_jwt_extended import jwt_required
 from application.models.payment import PaymentModel
 from application.schemas import PaymentSchema
 from application.models.team import TeamModel
+from application.mailer import Mailer
 from application.error_handlers import *
 
 
@@ -45,9 +46,17 @@ class PaymentVerify(Resource):
 
         payment = team.payment
 
+        if payment.status == PaymentModel.PAYMENT_OK:
+            raise BadRequest(message='Payment is already verified')
+
         if payment.transaction_no:
             payment.status = PaymentModel.PAYMENT_OK
             payment.save()
+
+            # send confirmation email
+            mailer = Mailer()
+            mailer.send_payment_confirmation(team)
+
             return {'message': 'Payment verified'}
 
         raise BadRequest(message='No transaction found for the given team')
