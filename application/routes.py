@@ -40,6 +40,6 @@ api.add_resource(Payment, '/payment/<string:team_identifier>')
 api.add_resource(PaymentVerify, '/payment/verify/<int:team_id>')
 
 # find entity by user readable data (like name, email etc)
-api.add_resource(FindParticipant, '/find/participant')
-api.add_resource(FindTeam, '/find/team')
+api.add_resource(FindParticipant, '/participant/find')
+api.add_resource(FindTeam, '/team/find')
 

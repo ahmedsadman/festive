@@ -37,10 +37,6 @@ class FindTeam(Resource):
         except ValidationError as err:
             raise FieldValidationFailed(error=err.messages)
 
-        # raise exception if zero argument is passed
-        if not _filter.keys():
-            raise BadRequest('No query arguments passed')
-
         team_paginated = TeamModel.find(_filter)  # returns pagination obj
         pagination_response = PaginatedResponse(team_paginated, TeamSchema(
             partial=True, many=True, exclude=('team_identifier', 'payment.transaction_no')))

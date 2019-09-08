@@ -11,7 +11,8 @@ class PaginatedResponse:
 
     def dump(self):
         if type(self.items) != list:
-            raise ValidationError('The schema should be a list object. Use many=True in schema')
+            raise ValidationError(
+                'The schema should be a list object. Use many=True in schema')
         return {
             'total': self.paginated.total,
             'page': self.paginated.page,
@@ -32,6 +33,9 @@ class BaseSchema(Schema):
 class EventSchema(BaseSchema):
     name = fields.Str(required=True)
     payable_amount = fields.Int(required=True)
+    payable_school = fields.Int(missing=None)
+    payable_college = fields.Int(missing=None)
+    payable_university = fields.Int(missing=None)
 
 
 class UserSchema(BaseSchema):
@@ -42,10 +46,11 @@ class UserSchema(BaseSchema):
 class ParticipantSchema(BaseSchema):
     name = fields.Str(required=True, validate=validate.Length(max=60))
     email = fields.Email(required=True, validate=validate.Length(max=60))
-    contact_no = fields.Str(required=False, missing=None, validate=validate.Length(max=30))
+    contact_no = fields.Str(missing=None, validate=validate.Length(max=30))
     institute = fields.Str(missing=None, validate=validate.Length(max=60))
+    tshirt_size = fields.Str(missing=None, validate=validate.OneOf(['s', 'm', 'l', 'xl', 'xxl']))
     events = fields.Nested('EventSchema', only=('id', 'name'), many=True)
-    event_id = fields.Int(load_only=True)
+    event_id = fields.Int(dump_only=True)
     teams = fields.Nested('TeamSchema', only=(
         'id', 'name', 'event_id'), many=True)
 
@@ -62,12 +67,13 @@ class PaymentSchema(BaseSchema):
 class TeamSchema(BaseSchema):
     name = fields.Str(required=True)
     single = fields.Bool()
+    participation_level = fields.Str(dump_only=True)
     created_at = fields.DateTime()
     event_id = fields.Int(required=True)
     team_identifier = fields.Str()
     payment = fields.Nested('PaymentSchema', exclude=('id', 'team_id'))
     payment_status = fields.Str(
-        load_only=True, validate=validate.OneOf(['pending', 'waiting', 'ok']))
+        dump_only=True, validate=validate.OneOf(['pending', 'waiting', 'ok']))
 
     # the 'teams' field should be excluded to avoid recursion error
     # because the field 'teams' itself is dependent on this TeamSchema
@@ -78,8 +84,10 @@ class TeamSchema(BaseSchema):
 
 class EventRegistration(BaseSchema):
     participants = fields.Nested(ParticipantSchema(
-        only=('name', 'email', 'institute')), many=True, required=True)
+        only=('name', 'email', 'institute', 'tshirt_size')), many=True, required=True)
     team_name = fields.Str(required=True, validate=validate.Length(max=50))
+    participation_level = fields.Str(missing=None,
+                                     validate=validate.OneOf(['university', 'school', 'college']))
     single = fields.Bool(required=True)
 
     @validates('participants')

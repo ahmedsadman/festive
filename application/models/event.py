@@ -7,13 +7,19 @@ class EventModel(BaseModel):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
     payable_amount = db.Column(db.Integer)
+    payable_school = db.Column(db.Integer, nullable=True)
+    payable_college = db.Column(db.Integer, nullable=True)
+    payable_university = db.Column(db.Integer, nullable=True)
 
     teams = db.relationship('TeamModel', backref='event', lazy='dynamic')
     # participants -> backref from participant model
 
-    def __init__(self, name, payable_amount):
+    def __init__(self, name, payable_amount, payable_school=None, payable_college=None, payable_university=None):
         self.name = name
         self.payable_amount = payable_amount
+        self.payable_school = payable_school
+        self.payable_college = payable_college
+        self.payable_university = payable_university
 
     def add_participant(self, participant):
         '''adds a participant under the event'''

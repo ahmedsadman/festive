@@ -45,12 +45,12 @@ class EventRegister(Resource):
             elif participant_obj is None:
                 # the participant does not exist, so create a new one
                 self.create_participant(
-                    participant['name'], participant['email'], participant['institute'])
+                    participant['name'], participant['email'], participant['tshirt_size'], participant['institute'])
 
         # at this point, all participants are valid.
 
         # create a team
-        team = self.create_team(data['team_name'], data['single'], event_id)
+        team = self.create_team(data['team_name'], data['single'], event_id, data['participation_level'])
 
         # create a payment record for the corresponding team
         payment = self.create_payment(team.id)
@@ -68,13 +68,13 @@ class EventRegister(Resource):
 
         return TeamSchema(only=('id', 'name', 'team_identifier')).dump(team), 201
 
-    def create_participant(self, name, email, institute):
-        participant_obj = ParticipantModel(name, email, institute)
+    def create_participant(self, name, email, tshirt_size, institute):
+        participant_obj = ParticipantModel(name, email, tshirt_size, institute)
         participant_obj.save()
         return participant_obj
 
-    def create_team(self, name, single, event_id):
-        team = TeamModel(name, single, event_id)
+    def create_team(self, name, single, event_id, participation_level):
+        team = TeamModel(name, single, event_id, participation_level)
         team.save()
         return team
 

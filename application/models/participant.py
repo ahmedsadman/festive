@@ -10,8 +10,11 @@ class ParticipantModel(BaseModel):
     name = db.Column(db.String(60))
     email = db.Column(db.String(60), unique=True, index=True)
     institute = db.Column(db.String(60), nullable=True)
+    tshirt_size = db.Column(db.String(10))
     contact_no = db.Column(db.String(30), nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    created_on = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_on = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     # for many to many relationship, maps user to events/teams
     events = db.relationship('EventModel', secondary='event_participant', lazy='dynamic',
@@ -19,9 +22,10 @@ class ParticipantModel(BaseModel):
     teams = db.relationship('TeamModel', secondary='team_participant', lazy='dynamic',
                             backref=db.backref('team_members', lazy='dynamic'))
 
-    def __init__(self, name, email, institute=None):
+    def __init__(self, name, email, tshirt_size, institute=None):
         self.name = name
         self.email = email
+        self.tshirt_size = tshirt_size
         self.institute = institute
 
     def has_participated_event(self, event_id):
@@ -48,4 +52,4 @@ class ParticipantModel(BaseModel):
             query = query.join(cls.events).filter_by(id=event_id)
 
         # finally return pagination object, sorted descending
-        return query.order_by(desc(cls.created_at)).paginate(page=page, per_page=10, error_out=True)
+        return query.order_by(desc(cls.created_on)).paginate(page=page, per_page=10, error_out=True)

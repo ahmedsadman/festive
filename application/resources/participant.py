@@ -39,9 +39,6 @@ class FindParticipant(Resource):
         except ValidationError as err:
             return err.messages
 
-        if not _filter.keys():
-            raise BadRequest(message='No query arguments passed')
-
         participant_paginated = ParticipantModel.find(_filter)
         pagination_response = PaginatedResponse(participant_paginated, ParticipantSchema(
             many=True, exclude=('contact_no',)))

@@ -26,16 +26,21 @@ class TeamModel(BaseModel):
     event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
     team_identifier = db.Column(
         db.String(50), nullable=True, unique=True, index=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    participation_level = db.Column(db.String(20))
+
+    created_on = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_on = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
     payment = db.relationship('PaymentModel', backref='team', uselist=False)
 
     # team_members -> backref from participant model
     # event -> backref from event model
 
-    def __init__(self, name, single, event_id):
+    def __init__(self, name, single, event_id, participation_level=None):
         self.name = name
         self.single = single
         self.event_id = event_id
+        self.participation_level = participation_level
 
     def save(self):
         db.session.add(self)
@@ -44,13 +49,13 @@ class TeamModel(BaseModel):
         db.session.commit()
 
     def _random_string(self, n):
-        return ''.join(random.choices(string.ascii_uppercase + string.digits, k=n))
+        return ''.join(random.choices(string.ascii_uppercase, k=n))
 
     def _generate_identifier(self):
         # first 4 char of event name (upper) + last 3 char of timestamp + random string of len 2 + id
         if not self.id:
             raise ValueError('ID is not defined')
-        stamp = str(int(self.created_at.timestamp()))[-3:]
+        stamp = str(int(self.created_on.timestamp()))[-3:]
         event_short = self.event.name.upper()[:4].strip()
         random_str = self._random_string(2)
         return event_short + stamp + random_str + repr(self.id)
@@ -83,4 +88,4 @@ class TeamModel(BaseModel):
             query = query.join(cls.payment).filter_by(status=payment_status)
 
         # finally return pagination object, sorted descending
-        return query.order_by(desc(cls.created_at)).paginate(page=page, per_page=10, error_out=True)
+        return query.order_by(desc(cls.created_on)).paginate(page=page, per_page=10, error_out=True)

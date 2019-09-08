@@ -21,7 +21,7 @@ class Event(Resource):
 
     @jwt_required
     def patch(self, event_id):
-        es = EventSchema(only=('name', 'payable_amount'), partial=True)
+        es = EventSchema(partial=True)
         data = es.load(request.get_json())
         event = EventModel.find_by_id(event_id)
 
@@ -51,7 +51,8 @@ class EventCreate(Resource):
         except ValidationError as err:
             raise FieldValidationFailed(error=err.messages)
 
-        event = EventModel(data['name'], data['payable_amount'])
+        event = EventModel(data['name'], data['payable_amount'], data['payable_school'],
+                           data['payable_college'], data['payable_university'])
 
         event.save()
         return es.dump(event), 201
