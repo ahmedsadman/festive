@@ -47,7 +47,7 @@ class EventRegister(Resource):
                 self.create_participant(
                     participant['name'], participant['email'], participant['tshirt_size'], participant['institute'])
 
-        # at this point, all participants are valid.
+            
 
         # create a team
         team = self.create_team(data['team_name'], data['single'], event_id, data['participation_level'])
@@ -59,6 +59,15 @@ class EventRegister(Resource):
         for participant in data['participants']:
             participant_obj = ParticipantModel.find_by_email(
                 participant['email'])
+
+            # update fields that were previously missing
+            updated = False
+            for attr, value in participant.items():
+                if not getattr(participant_obj, attr):
+                    setattr(participant_obj, attr, value)
+                    updated = True
+            if updated: participant_obj.save()
+
             event.add_participant(participant_obj)
             team.add_participant(participant_obj)
 
@@ -82,3 +91,6 @@ class EventRegister(Resource):
         payment = PaymentModel(team_id)
         payment.save()
         return payment
+
+    def add_missing_fields(self, participant):
+        pass

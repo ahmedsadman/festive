@@ -84,7 +84,7 @@ class TeamSchema(BaseSchema):
 
 class EventRegistration(BaseSchema):
     participants = fields.Nested(ParticipantSchema(
-        only=('name', 'email', 'institute', 'tshirt_size')), many=True, required=True)
+        only=('name', 'email', 'institute', 'tshirt_size', 'contact_no')), many=True, required=True)
     team_name = fields.Str(required=True, validate=validate.Length(max=50))
     participation_level = fields.Str(missing=None,
                                      validate=validate.OneOf(['university', 'school', 'college']))
