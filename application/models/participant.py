@@ -22,11 +22,12 @@ class ParticipantModel(BaseModel):
     teams = db.relationship('TeamModel', secondary='team_participant', lazy='dynamic',
                             backref=db.backref('team_members', lazy='dynamic'))
 
-    def __init__(self, name, email, tshirt_size, institute=None):
+    def __init__(self, name, email, tshirt_size, institute, contact_no=None):
         self.name = name
         self.email = email
         self.tshirt_size = tshirt_size
         self.institute = institute
+        self.contact_no = contact_no
 
     def has_participated_event(self, event_id):
         return self.events.filter_by(id=event_id).first()

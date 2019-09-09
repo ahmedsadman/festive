@@ -39,5 +39,5 @@ class FindTeam(Resource):
 
         team_paginated = TeamModel.find(_filter)  # returns pagination obj
         pagination_response = PaginatedResponse(team_paginated, TeamSchema(
-            partial=True, many=True, exclude=('team_identifier', 'payment.transaction_no')))
+            partial=True, many=True, exclude=('team_identifier', 'event_id', 'payment.transaction_no')))
         return pagination_response.dump()
