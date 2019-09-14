@@ -50,9 +50,9 @@ class EventCreate(Resource):
             data = es.load(request.get_json())
         except ValidationError as err:
             raise FieldValidationFailed(error=err.messages)
-
+        
         event = EventModel(data['name'], data['payable_amount'], data['payable_school'],
-                           data['payable_college'], data['payable_university'])
+                           data['payable_college'], data['payable_university'], data['team_participation'], data['rulebook_url'])
 
         event.save()
         return es.dump(event), 201

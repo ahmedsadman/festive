@@ -32,10 +32,13 @@ class BaseSchema(Schema):
 
 class EventSchema(BaseSchema):
     name = fields.Str(required=True)
+    active = fields.Bool()
     payable_amount = fields.Int(required=True)
     payable_school = fields.Int(missing=None)
     payable_college = fields.Int(missing=None)
     payable_university = fields.Int(missing=None)
+    rulebook_url = fields.Str(missing=None)
+    team_participation = fields.Bool(required=True)
 
 
 class UserSchema(BaseSchema):
@@ -88,17 +91,9 @@ class EventRegistration(BaseSchema):
     team_name = fields.Str(required=True, validate=validate.Length(max=50))
     participation_level = fields.Str(missing=None,
                                      validate=validate.OneOf(['university', 'school', 'college']))
-    single = fields.Bool(required=True)
 
     @validates('participants')
     def validate_participants(self, value):
         if len(value) == 0:
             raise ValidationError(
                 'At least one participant must exist in a team')
-
-    @validates_schema
-    def check_single(self, data, **kwargs):
-        '''validate that 'single' field is consistent with participant length'''
-        if data['single'] and len(data['participants']) > 1:
-            raise ValidationError(
-                'Only one participant should exist when single=True')

@@ -29,12 +29,17 @@ class EventRegister(Resource):
         if not event:
             raise NotFound(message='The event does not exist')
 
+        # check if the event is consistent with number of participants under a team
+        if not event.team_participation and len(data['participants']) > 1:
+            raise BadRequest(
+                message='The event does not allow team participation. Should be only one member under a team')
+
         # validate the participants
         self.validate_or_create_participants(data['participants'], event)
 
         # create a team
         team = self.create_team(
-            data['team_name'], data['single'], event_id, data['participation_level'])
+            data['team_name'], event.team_participation, event_id, data['participation_level'])
 
         # create a payment record for the corresponding team
         payment = self.create_payment(team.id)
@@ -62,11 +67,11 @@ class EventRegister(Resource):
             elif participant_obj is None:
                 # the participant does not exist, so create a new one
                 self.create_participant(
-                    participant['name'], participant['email'], participant['tshirt_size'], participant['institute'], data['contact_no'])
+                    participant['name'], participant['email'], participant['tshirt_size'], participant['institute'], participant['contact_no'])
 
     def map_participants(self, participants, event, team):
         '''Assign participants to a particular team & a particular event'''
-        
+
         for participant in participants:
             participant_obj = ParticipantModel.find_by_email(
                 participant['email'])
