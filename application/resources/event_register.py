@@ -39,7 +39,7 @@ class EventRegister(Resource):
 
         # create a team
         team = self.create_team(
-            data['team_name'], event.team_participation, event_id, data['participation_level'])
+            data['team_name'], not event.team_participation, event_id, data['participation_level'])
 
         # create a payment record for the corresponding team
         payment = self.create_payment(team.id)

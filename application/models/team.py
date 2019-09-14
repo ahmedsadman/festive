@@ -11,10 +11,9 @@ class TeamModel(BaseModel):
     '''Model for Teams. In any fest, there are some events where people participate as teams,
     for example 'Hackthon' or 'Programming Contest'. Again there are some events, where single 
     participation is expected, such as 'Math Olympiads'. Whether single participant 
-    or multiple participants, all of them are considered as a team. Only difference is, if single
-    participant is expected, just set the 'single' value to true, which says that the team is a
-    pseudo-team and should contain only one member. For this case, team name should be the
-    participant's name'''
+    or multiple participants, all of them are considered as a team . If single
+    participant is expected, the value of the field 'single' will be set to True, based
+    on the event parameters and the team name will be participant's name.'''
 
     __tablename__ = 'teams'
     id = db.Column(db.Integer, primary_key=True)
