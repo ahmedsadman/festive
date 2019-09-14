@@ -53,7 +53,7 @@ class ParticipantSchema(BaseSchema):
     institute = fields.Str(required=True, validate=validate.Length(max=60))
     tshirt_size = fields.Str(required=True, validate=validate.OneOf(['s', 'm', 'l', 'xl', 'xxl']))
     events = fields.Nested('EventSchema', only=('id', 'name'), many=True)
-    event_id = fields.Int(dump_only=True)
+    event_id = fields.Int()
     teams = fields.Nested('TeamSchema', only=(
         'id', 'name', 'event_id'), many=True)
 
@@ -75,8 +75,7 @@ class TeamSchema(BaseSchema):
     event_id = fields.Int(required=True)
     team_identifier = fields.Str()
     payment = fields.Nested('PaymentSchema', exclude=('id', 'team_id'))
-    payment_status = fields.Str(
-        dump_only=True, validate=validate.OneOf(['pending', 'waiting', 'ok']))
+    payment_status = fields.Str(validate=validate.OneOf(['pending', 'waiting', 'ok']))
 
     # the 'teams' field should be excluded to avoid recursion error
     # because the field 'teams' itself is dependent on this TeamSchema
