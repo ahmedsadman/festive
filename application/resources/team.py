@@ -22,22 +22,41 @@ class Team(Resource):
         team = TeamModel.find_by_id(team_id)
         if team:
             team.delete()
-            return {'message': 'Successfully deleted'}
+            return {"message": "Successfully deleted"}
         raise NotFound()
 
 
 class FindTeam(Resource):
     def get(self):
-        '''find a team by using filters from request arguments'''
+        """find a team by using filters from request arguments"""
         # partial -> allow skipping of required fields
-        ts = TeamSchema(partial=True, only=(
-            'name', 'event_id', 'team_identifier', 'payment_status', 'single', 'page'))
+        ts = TeamSchema(
+            partial=True,
+            only=(
+                "name",
+                "event_id",
+                "team_identifier",
+                "payment_status",
+                "single",
+                "page",
+            ),
+        )
         try:
             _filter = ts.load(request.args)
         except ValidationError as err:
             raise FieldValidationFailed(error=err.messages)
 
         team_paginated = TeamModel.find(_filter)  # returns pagination obj
-        pagination_response = PaginatedResponse(team_paginated, TeamSchema(
-            partial=True, many=True, exclude=('team_identifier', 'event_id', 'payment.transaction_no')))
+        pagination_response = PaginatedResponse(
+            team_paginated,
+            TeamSchema(
+                partial=True,
+                many=True,
+                exclude=(
+                    "team_identifier",
+                    "event_id",
+                    "payment.transaction_no",
+                ),
+            ),
+        )
         return pagination_response.dump()

@@ -3,7 +3,7 @@ from application.models.basemodel import BaseModel
 
 
 class EventModel(BaseModel):
-    __tablename__ = 'events'
+    __tablename__ = "events"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
     active = db.Column(db.Boolean, default=True)
@@ -16,10 +16,19 @@ class EventModel(BaseModel):
     # whether the event is meant to be participated under a team
     team_participation = db.Column(db.Boolean)
 
-    teams = db.relationship('TeamModel', backref='event', lazy='dynamic')
+    teams = db.relationship("TeamModel", backref="event", lazy="dynamic")
     # participants -> backref from participant model
 
-    def __init__(self, name, payable_amount, payable_school=None, payable_college=None, payable_university=None, team_participation=False, rulebook_url=None):
+    def __init__(
+        self,
+        name,
+        payable_amount,
+        payable_school=None,
+        payable_college=None,
+        payable_university=None,
+        team_participation=False,
+        rulebook_url=None,
+    ):
         self.name = name
         self.payable_amount = payable_amount
         self.payable_school = payable_school
@@ -29,7 +38,7 @@ class EventModel(BaseModel):
         self.rulebook_url = rulebook_url
 
     def add_participant(self, participant):
-        '''adds a participant under the event'''
+        """adds a participant under the event"""
         self.participants.append(participant)
         db.session.commit()
 

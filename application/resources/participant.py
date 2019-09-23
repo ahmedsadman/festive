@@ -25,14 +25,16 @@ class Participant(Resource):
 
         if participant:
             participant.delete()
-            return {'message': 'Successfully deleted'}
+            return {"message": "Successfully deleted"}
         raise NotFound()
 
 
 class FindParticipant(Resource):
     def get(self):
-        '''find participants by query filters'''
-        ps = ParticipantSchema(partial=True, only=('name', 'email', 'event_id', 'page'))
+        """find participants by query filters"""
+        ps = ParticipantSchema(
+            partial=True, only=("name", "email", "event_id", "page")
+        )
 
         try:
             _filter = ps.load(request.args)
@@ -40,6 +42,8 @@ class FindParticipant(Resource):
             return err.messages
 
         participant_paginated = ParticipantModel.find(_filter)
-        pagination_response = PaginatedResponse(participant_paginated, ParticipantSchema(
-            many=True, exclude=('contact_no',)))
+        pagination_response = PaginatedResponse(
+            participant_paginated,
+            ParticipantSchema(many=True, exclude=("contact_no",)),
+        )
         return pagination_response.dump()

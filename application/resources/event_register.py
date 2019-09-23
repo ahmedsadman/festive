@@ -12,11 +12,11 @@ from application.mailer import Mailer
 
 
 class EventRegister(Resource):
-    '''Handle event registrations for teams/participants'''
+    """Handle event registrations for teams/participants"""
 
     def post(self, event_id):
-        '''register participants under an event
-        handles user creation, team creation and mapping in one place'''
+        """register participants under an event
+        handles user creation, team creation and mapping in one place"""
 
         # parse data
         er_schema = EventRegistration()
@@ -27,54 +27,78 @@ class EventRegister(Resource):
 
         event = EventModel.find_by_id(event_id)
         if not event:
-            raise NotFound(message='The event does not exist')
+            raise NotFound(message="The event does not exist")
 
-        # check if the event is consistent with number of participants under a team
-        if not event.team_participation and len(data['participants']) > 1:
+        # check if the event is consistent with number of participants
+        # under a team
+        if not event.team_participation and len(data["participants"]) > 1:
             raise BadRequest(
-                message='The event does not allow team participation. Should be only one member under a team')
+                message="The event does not allow team participation. Should \
+                     be only one member under a team"
+            )
 
         # validate the participants
-        self.validate_or_create_participants(data['participants'], event)
+        self.validate_or_create_participants(data["participants"], event)
 
         # create a team
         team = self.create_team(
-            data['team_name'], not event.team_participation, event_id, data['participation_level'])
+            data["team_name"],
+            not event.team_participation,
+            event_id,
+            data["participation_level"],
+        )
 
         # create a payment record for the corresponding team
         payment = self.create_payment(team.id)
 
         # add participants to the corresponding team and event
-        self.map_participants(data['participants'], event, team)
+        self.map_participants(data["participants"], event, team)
 
         # send participation email to the first participant
         mailer = Mailer()
         mailer.send_participation_mail(
-            data['participants'][0]['email'], event, team.team_identifier)
+            data["participants"][0]["email"], event, team.team_identifier
+        )
 
-        return TeamSchema(only=('id', 'name', 'team_identifier')).dump(team), 201
+        return (
+            TeamSchema(only=("id", "name", "team_identifier")).dump(team),
+            201,
+        )
 
     def validate_or_create_participants(self, participants, event):
         for participant in participants:
             # find the user
             participant_obj = ParticipantModel.find_by_email(
-                participant['email'])
+                participant["email"]
+            )
 
             # if exists, check if he has already participated in the event
-            if participant_obj and participant_obj.has_participated_event(event.id):
-                raise BadRequest(message='The email "{email}" is already registered under event "{event}"'.format(
-                    email=participant['email'], event=event.name))
+            if participant_obj and participant_obj.has_participated_event(
+                event.id
+            ):
+                raise BadRequest(
+                    message='The email "{email}" is already registered under \
+                        event "{event}"'.format(
+                        email=participant["email"], event=event.name
+                    )
+                )
             elif participant_obj is None:
                 # the participant does not exist, so create a new one
                 self.create_participant(
-                    participant['name'], participant['email'], participant['tshirt_size'], participant['institute'], participant['contact_no'])
+                    participant["name"],
+                    participant["email"],
+                    participant["tshirt_size"],
+                    participant["institute"],
+                    participant["contact_no"],
+                )
 
     def map_participants(self, participants, event, team):
-        '''Assign participants to a particular team & a particular event'''
+        """Assign participants to a particular team & a particular event"""
 
         for participant in participants:
             participant_obj = ParticipantModel.find_by_email(
-                participant['email'])
+                participant["email"]
+            )
 
             # update fields that were previously missing
             updated = False
@@ -88,9 +112,12 @@ class EventRegister(Resource):
             event.add_participant(participant_obj)
             team.add_participant(participant_obj)
 
-    def create_participant(self, name, email, tshirt_size, institute, contact_no):
+    def create_participant(
+        self, name, email, tshirt_size, institute, contact_no
+    ):
         participant_obj = ParticipantModel(
-            name, email, tshirt_size, institute, contact_no)
+            name, email, tshirt_size, institute, contact_no
+        )
         participant_obj.save()
         return participant_obj
 

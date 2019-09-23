@@ -12,7 +12,7 @@ jwt = JWTManager()
 
 
 def create_app():
-    '''Create the core application, uses application factory pattern'''
+    """Create the core application, uses application factory pattern"""
     app = Flask(__name__)
     app.config.from_object(Config)
 

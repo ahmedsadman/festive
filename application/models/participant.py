@@ -5,7 +5,7 @@ from application.models.basemodel import BaseModel
 
 
 class ParticipantModel(BaseModel):
-    __tablename__ = 'participants'
+    __tablename__ = "participants"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(60))
     email = db.Column(db.String(60), unique=True, index=True)
@@ -14,13 +14,23 @@ class ParticipantModel(BaseModel):
     contact_no = db.Column(db.String(30), nullable=True)
 
     created_on = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_on = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    updated_on = db.Column(
+        db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
+    )
 
     # for many to many relationship, maps user to events/teams
-    events = db.relationship('EventModel', secondary='event_participant', lazy='dynamic',
-                             backref=db.backref('participants', lazy='dynamic'))
-    teams = db.relationship('TeamModel', secondary='team_participant', lazy='dynamic',
-                            backref=db.backref('team_members', lazy='dynamic'))
+    events = db.relationship(
+        "EventModel",
+        secondary="event_participant",
+        lazy="dynamic",
+        backref=db.backref("participants", lazy="dynamic"),
+    )
+    teams = db.relationship(
+        "TeamModel",
+        secondary="team_participant",
+        lazy="dynamic",
+        backref=db.backref("team_members", lazy="dynamic"),
+    )
 
     def __init__(self, name, email, tshirt_size, institute, contact_no=None):
         self.name = name
@@ -38,12 +48,14 @@ class ParticipantModel(BaseModel):
 
     @classmethod
     def find(cls, _filter):
-        '''find participant(s) based on given filters (in request arg), returns pagination obj'''
+        """find participant(s) based on given filters (in request arg),
+        returns pagination obj"""
+
         # remove any relationship based filters first
-        event_id = _filter.pop('event_id', None)
+        event_id = _filter.pop("event_id", None)
 
         # seperate non-filter arguments (like pagination)
-        page = _filter.pop('page', 1)
+        page = _filter.pop("page", 1)
 
         # build the simple query
         query = super().find_query(_filter)
@@ -53,4 +65,6 @@ class ParticipantModel(BaseModel):
             query = query.join(cls.events).filter_by(id=event_id)
 
         # finally return pagination object, sorted descending
-        return query.order_by(desc(cls.created_on)).paginate(page=page, per_page=10, error_out=True)
+        return query.order_by(desc(cls.created_on)).paginate(
+            page=page, per_page=10, error_out=True
+        )

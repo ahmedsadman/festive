@@ -6,8 +6,9 @@ from application.models.basemodel import BaseModel
 
 
 class UserModel(BaseModel):
-    '''The base user model, represents an admin in this case'''
-    __tablename__ = 'users'
+    """The base user model, represents an admin in this case"""
+
+    __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True)
     _password = db.Column(db.String(150))

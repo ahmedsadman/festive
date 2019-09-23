@@ -11,10 +11,11 @@ from application.error_handlers import *
 
 
 class Payment(Resource):
-    '''Requests for payment verification. Participant provides transcation no of payment.'''
+    """Requests for payment verification. Participant provides transcation no
+    of payment."""
 
     def post(self, team_identifier):
-        ps = PaymentSchema(partial=True, only=('transaction_no',))
+        ps = PaymentSchema(partial=True, only=("transaction_no",))
         try:
             data = ps.load(request.get_json())
         except ValidationError as err:
@@ -22,32 +23,35 @@ class Payment(Resource):
 
         team = TeamModel.find_by_identifier(team_identifier)
         if not team:
-            raise NotFound(message='Team not found')
+            raise NotFound(message="Team not found")
 
         payment = team.payment
 
         if payment.transaction_no:
             raise BadRequest(
-                message='The team has already requested for payment verification')
+                message="The team has already requested for payment \
+                    verification"
+            )
 
-        payment.transaction_no = data['transaction_no']
+        payment.transaction_no = data["transaction_no"]
         payment.status = PaymentModel.PAYMENT_WAITING
         payment.save()
-        return {'message': 'Success'}
+        return {"message": "Success"}
 
 
 class PaymentVerify(Resource):
-    '''Verify payment of participants from admin side'''
+    """Verify payment of participants from admin side"""
+
     @jwt_required
     def post(self, team_id):
         team = TeamModel.find_by_id(team_id)
         if not team:
-            raise NotFound(message='The team was not found')
+            raise NotFound(message="The team was not found")
 
         payment = team.payment
 
         if payment.status == PaymentModel.PAYMENT_OK:
-            raise BadRequest(message='Payment is already verified')
+            raise BadRequest(message="Payment is already verified")
 
         if payment.transaction_no:
             payment.status = PaymentModel.PAYMENT_OK
@@ -57,6 +61,6 @@ class PaymentVerify(Resource):
             mailer = Mailer()
             mailer.send_payment_confirmation(team)
 
-            return {'message': 'Payment verified'}
+            return {"message": "Payment verified"}
 
-        raise BadRequest(message='No transaction found for the given team')
+        raise BadRequest(message="No transaction found for the given team")
