@@ -2,7 +2,6 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
-from config import Config
 from application.error_handlers import *
 
 # globally accessible variables
@@ -11,10 +10,10 @@ migrate = Migrate()
 jwt = JWTManager()
 
 
-def create_app():
+def create_app(config):
     """Create the core application, uses application factory pattern"""
     app = Flask(__name__)
-    app.config.from_object(Config)
+    app.config.from_object(config)
 
     db.init_app(app)
     migrate.init_app(app, db)
