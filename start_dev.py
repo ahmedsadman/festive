@@ -1,8 +1,7 @@
 from application import create_app
 from dotenv import load_dotenv
-from config import Config
+from config_dev import Config
 
-load_dotenv()
 app = create_app(Config)
 
 if __name__ == "__main__":
