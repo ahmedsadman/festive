@@ -4,4 +4,5 @@ python:
 install:
     - pip install -r requirements.txt
 script:
-    - pytest
+    - if [ "$TRAVIS_BRANCH" = "master" ]; then pytest tests/test_prod; fi
+    - if [ "$TRAVIS_BRANCH" = "development" ]; then pytest tests/test_dev; fi
