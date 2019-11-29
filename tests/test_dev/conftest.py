@@ -1,7 +1,5 @@
 import pytest
-from dotenv import load_dotenv
-from application import create_app
-from config_dev import Config
+from tests.conftest_wrapper import wrapper_client
 
 # holds all the fixtures
 # fixtures are ran once during request, this client will be passed in
@@ -10,6 +8,4 @@ from config_dev import Config
 
 @pytest.fixture(scope="module")
 def client(request):
-    flask_app = create_app(Config)
-    testing_client = flask_app.test_client()
-    return testing_client
+    return wrapper_client("dev")
