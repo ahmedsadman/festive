@@ -13,7 +13,7 @@ def test_homepage(client):
 
 
 def test_events(client):
-    r = client.get("/events")
+    r = client.get("/event/list")
     # res = json.loads(r.data)
     assert r.status_code == 200
 
