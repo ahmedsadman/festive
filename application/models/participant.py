@@ -1,7 +1,7 @@
 from datetime import datetime
 from sqlalchemy import desc
 from application import db
-from application.models.basemodel import BaseModel
+from application.models import BaseModel
 
 
 class ParticipantModel(BaseModel):

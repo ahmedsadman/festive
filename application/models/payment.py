@@ -1,6 +1,6 @@
 from datetime import datetime
 from application import db
-from application.models.basemodel import BaseModel
+from application.models import BaseModel
 
 
 class PaymentModel(BaseModel):

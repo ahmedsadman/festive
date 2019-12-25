@@ -2,7 +2,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from application import db
-from application.models.basemodel import BaseModel
+from application.models import BaseModel
 
 
 class UserModel(BaseModel):

@@ -25,7 +25,23 @@ def create_app(config):
         return error.to_dict(), error.status
 
     with app.app_context():
-        from . import routes
+        # import blueprints
+        from .resources.info import info_bp
+        from .resources.event import event_bp
+        from .resources.register import register_bp
+        from .resources.participant import participant_bp
+        from .resources.auth import auth_bp
+        from .resources.team import team_bp
+        from .resources.payment import payment_bp
+
+        # register blueprints
+        app.register_blueprint(info_bp, url_prefix="/")
+        app.register_blueprint(event_bp, url_prefix="/event")
+        app.register_blueprint(register_bp, url_prefix="/register")
+        app.register_blueprint(participant_bp, url_prefix="/participant")
+        app.register_blueprint(auth_bp, url_prefix="/auth")
+        app.register_blueprint(team_bp, url_prefix="/team")
+        app.register_blueprint(payment_bp, url_prefix="/payment")
 
         db.create_all()
         return app

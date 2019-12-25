@@ -1,77 +1,74 @@
-from flask import request
-from flask_restful import Resource
+from flask import Blueprint, request
 from marshmallow import ValidationError
 from flask_jwt_extended import jwt_required
 
-from application.models.event import EventModel
-from application.models.participant import ParticipantModel
-from application.models.team import TeamModel
+from application.models import EventModel
 from application.error_handlers import *
 from application.schemas import EventRegistration, TeamSchema, EventSchema
 
+event_bp = Blueprint("event", __name__)
 
-class Event(Resource):
-    @jwt_required
-    def get(self, event_id):
-        es = EventSchema()
-        event = EventModel.find_by_id(event_id)
-        if event:
-            return es.dump(event)
-        raise NotFound()
 
-    @jwt_required
-    def patch(self, event_id):
-        es = EventSchema(partial=True)
+@event_bp.route("/list", methods=["GET"])
+def event_list():
+    es = EventSchema()
+    events = EventModel.find_all()
+    return {"events": es.dump(events, many=True)}
+
+
+@event_bp.route("/create", methods=["POST"])
+@jwt_required
+def create_event():
+    """create a new event with the given name"""
+    es = EventSchema()
+    try:
         data = es.load(request.get_json())
-        event = EventModel.find_by_id(event_id)
+    except ValidationError as err:
+        return err.messages, 400
 
-        if event:
-            for attr, value in data.items():
-                setattr(event, attr, value)
-            event.save()
-            return {"message": "Event data updated"}
-        raise NotFound()
-
-    @jwt_required
-    def delete(self, event_id):
-        event = EventModel.find_by_id(event_id)
-        if event:
-            event.delete()
-            return {"message": "Event deleted successfully"}
-        raise NotFound()
+    event = EventModel(
+        data["name"],
+        data["payable_amount"],
+        data["payable_school"],
+        data["payable_college"],
+        data["payable_university"],
+        data["team_participation"],
+        data["rulebook_url"],
+    )
+    event.save()
+    return es.dump(event), 201
 
 
-class EventCreate(Resource):
-    @jwt_required
-    def post(self):
-        """create a new event with the given name"""
-        es = EventSchema()
-        try:
-            data = es.load(request.get_json())
-        except ValidationError as err:
-            raise FieldValidationFailed(error=err.messages)
+@event_bp.route("/<event_id>", methods=["GET"])
+@jwt_required
+def get_event(event_id):
+    es = EventSchema()
+    event = EventModel.find_by_id(event_id)
+    if event:
+        return es.dump(event)
+    raise NotFound()
 
-        event = EventModel(
-            data["name"],
-            data["payable_amount"],
-            data["payable_school"],
-            data["payable_college"],
-            data["payable_university"],
-            data["team_participation"],
-            data["rulebook_url"],
-        )
 
+@event_bp.route("/<event_id>", methods=["DELETE"])
+@jwt_required
+def delete_event(event_id):
+    event = EventModel.find_by_id(event_id)
+    if event:
+        event.delete()
+        return {"message": "Event deleted successfully", "event": event.name}
+    raise NotFound()
+
+
+@event_bp.route("/<event_id>", methods=["PATCH"])
+@jwt_required
+def update_event(event_id):
+    es = EventSchema(partial=True)
+    data = es.load(request.get_json())
+    event = EventModel.find_by_id(event_id)
+
+    if event:
+        for attr, value in data.items():
+            setattr(event, attr, value)
         event.save()
-        return es.dump(event), 201
-
-
-class EventList(Resource):
-    """Handles list of events with specific information like number
-    of participants"""
-
-    # number of participants not implemented yet
-
-    def get(self):
-        es = EventSchema()
-        events = EventModel.find_all()
-        return {"events": es.dump(events, many=True)}
+        return {"message": "Event data updated", "data": es.dump(event)}
+    raise NotFound()

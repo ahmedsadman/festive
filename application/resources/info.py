@@ -1,10 +1,12 @@
-from flask_restful import Resource
+from flask import Blueprint
+
+info_bp = Blueprint("info", __name__)
 
 
-class Info(Resource):
-    def get(self):
-        return {
-            "title": "Fest Management REST API",
-            "version": "0.2.1",
-            "author": "Ahmed Sadman Muhib (Samyo), CSE 16, IUT",
-        }
+@info_bp.route("/", methods=["GET"])
+def info():
+    return {
+        "title": "Fest Management API",
+        "version": "1.0",
+        "author": "Ahmed Sadman Muhib (Samyo), CSE 16, IUT",
+    }
