@@ -24,14 +24,14 @@ def register():
             message='The username "{}" already exists'.format(data["username"])
         )
 
-    user = UserModel(data["username"], data["password"])
+    user = UserModel(data["username"], data["password"], data["email"])
     user.save()
     return UserSchema(exclude=("password",)).dump(user)
 
 
 @auth_bp.route("/login", methods=["POST"])
 def login():
-    us = UserSchema()
+    us = UserSchema(only=("username", "password"))
     try:
         data = us.load(request.get_json())
     except ValidationError as err:
@@ -42,7 +42,7 @@ def login():
 
     # match password and then send access token if valid
     if user and user.check_password(data["password"]):
-        expires = timedelta(days=1)  # token will expire after 1 day
+        expires = timedelta(minutes=15)  # token will expire after 15 min
         access_token = create_access_token(
             identity=user.id, fresh=True, expires_delta=expires
         )

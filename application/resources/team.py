@@ -2,6 +2,7 @@ from flask import request, Blueprint
 from marshmallow import ValidationError
 from flask_jwt_extended import jwt_required
 
+from application.helpers.auth_helper import super_admin_required
 from application.schemas import TeamSchema, PaginatedResponse
 from application.models.team import TeamModel
 from application.error_handlers import *
@@ -20,7 +21,7 @@ def get_team(team_id):
 
 
 @team_bp.route("/<team_id>", methods=["DELETE"])
-@jwt_required
+@super_admin_required
 def delete_team(team_id):
     team = TeamModel.find_by_id(team_id)
     if team:

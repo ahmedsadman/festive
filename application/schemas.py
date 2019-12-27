@@ -52,6 +52,7 @@ class EventSchema(BaseSchema):
 class UserSchema(BaseSchema):
     username = fields.Str(required=True)
     password = fields.Str(required=True)
+    email = fields.Email(required=True)
 
 
 class ParticipantSchema(BaseSchema):

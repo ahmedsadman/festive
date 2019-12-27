@@ -3,6 +3,7 @@ from marshmallow import ValidationError
 from flask_jwt_extended import jwt_required
 
 from application.models import EventModel
+from application.helpers.auth_helper import super_admin_required
 from application.error_handlers import *
 from application.schemas import EventRegistration, TeamSchema, EventSchema
 
@@ -17,7 +18,7 @@ def event_list():
 
 
 @event_bp.route("/create", methods=["POST"])
-@jwt_required
+@super_admin_required
 def create_event():
     """create a new event with the given name"""
     es = EventSchema()
@@ -50,7 +51,7 @@ def get_event(event_id):
 
 
 @event_bp.route("/<event_id>", methods=["DELETE"])
-@jwt_required
+@super_admin_required
 def delete_event(event_id):
     event = EventModel.find_by_id(event_id)
     if event:

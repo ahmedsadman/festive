@@ -34,6 +34,9 @@ def create_app(config):
         from .resources.team import team_bp
         from .resources.payment import payment_bp
 
+        # import helper functions
+        from .helpers.auth_helper import add_claims
+
         # register blueprints
         app.register_blueprint(info_bp, url_prefix="/")
         app.register_blueprint(event_bp, url_prefix="/event")

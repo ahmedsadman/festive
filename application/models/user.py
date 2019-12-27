@@ -12,10 +12,13 @@ class UserModel(BaseModel):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True)
     _password = db.Column(db.String(150))
+    email = db.Column(db.String(50), unique=True)
+    super_admin = db.Column(db.Boolean, default=False)
 
-    def __init__(self, username, password):
+    def __init__(self, username, password, email):
         self.username = username
         self.password = password
+        self.email = email
 
     @hybrid_property
     def password(self):
@@ -31,3 +34,6 @@ class UserModel(BaseModel):
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
+
+    def is_super_admin(self):
+        return self.super_admin is True
