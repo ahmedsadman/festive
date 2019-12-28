@@ -4,8 +4,8 @@ from flask_jwt_extended import create_access_token
 from datetime import timedelta
 
 from application.models import UserModel
-from application.schemas import UserSchema
-from application.error_handlers import *
+from application.helpers.schemas import UserSchema
+from application.helpers.error_handlers import *
 
 auth_bp = Blueprint("auth", __name__)
 

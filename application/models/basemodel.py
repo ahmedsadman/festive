@@ -1,6 +1,6 @@
 from sqlalchemy import func
 from application import db
-from application.error_handlers import ServerError
+from application.helpers.error_handlers import ServerError
 
 
 class BaseModel(db.Model):

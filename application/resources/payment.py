@@ -3,10 +3,10 @@ from marshmallow import ValidationError
 from flask_jwt_extended import jwt_required
 
 from application.models.payment import PaymentModel
-from application.schemas import PaymentSchema
+from application.helpers.schemas import PaymentSchema
 from application.models.team import TeamModel
-from application.mailer import Mailer
-from application.error_handlers import *
+from application.helpers.mailer import Mailer
+from application.helpers.error_handlers import *
 
 payment_bp = Blueprint("payment", __name__)
 

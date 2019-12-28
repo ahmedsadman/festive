@@ -5,9 +5,13 @@ from application.models import EventModel
 from application.models import ParticipantModel
 from application.models import TeamModel
 from application.models import PaymentModel
-from application.error_handlers import *
-from application.schemas import EventRegistration, TeamSchema, EventSchema
-from application.mailer import Mailer
+from application.helpers.error_handlers import *
+from application.helpers.schemas import (
+    EventRegistration,
+    TeamSchema,
+    EventSchema,
+)
+from application.helpers.mailer import Mailer
 
 register_bp = Blueprint("register", __name__)
 

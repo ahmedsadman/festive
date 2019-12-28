@@ -4,8 +4,12 @@ from flask_jwt_extended import jwt_required
 
 from application.models import EventModel
 from application.helpers.auth_helper import super_admin_required
-from application.error_handlers import *
-from application.schemas import EventRegistration, TeamSchema, EventSchema
+from application.helpers.error_handlers import *
+from application.helpers.schemas import (
+    EventRegistration,
+    TeamSchema,
+    EventSchema,
+)
 
 event_bp = Blueprint("event", __name__)
 

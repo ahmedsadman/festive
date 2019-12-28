@@ -4,8 +4,8 @@ from flask_jwt_extended import jwt_required
 
 from application.helpers.auth_helper import super_admin_required
 from application.models import ParticipantModel
-from application.error_handlers import BadRequest, NotFound
-from application.schemas import ParticipantSchema, PaginatedResponse
+from application.helpers.error_handlers import BadRequest, NotFound
+from application.helpers.schemas import ParticipantSchema, PaginatedResponse
 
 participant_bp = Blueprint("participant", __name__)
 

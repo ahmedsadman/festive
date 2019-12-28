@@ -2,7 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
-from application.error_handlers import *
+from application.helpers.error_handlers import *
 
 # globally accessible variables
 db = SQLAlchemy()
@@ -34,7 +34,7 @@ def create_app(config):
         from .resources.team import team_bp
         from .resources.payment import payment_bp
 
-        # import helper functions
+        # import jwt claims loader
         from .helpers.auth_helper import add_claims
 
         # register blueprints

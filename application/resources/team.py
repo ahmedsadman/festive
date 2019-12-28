@@ -3,9 +3,9 @@ from marshmallow import ValidationError
 from flask_jwt_extended import jwt_required
 
 from application.helpers.auth_helper import super_admin_required
-from application.schemas import TeamSchema, PaginatedResponse
+from application.helpers.schemas import TeamSchema, PaginatedResponse
 from application.models.team import TeamModel
-from application.error_handlers import *
+from application.helpers.error_handlers import *
 
 team_bp = Blueprint("team", __name__)
 
