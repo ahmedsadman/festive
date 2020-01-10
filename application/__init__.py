@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from application.helpers.error_handlers import *
 
@@ -8,6 +9,7 @@ from application.helpers.error_handlers import *
 db = SQLAlchemy()
 migrate = Migrate()
 jwt = JWTManager()
+cors = CORS()
 
 
 def create_app(config):
@@ -16,6 +18,7 @@ def create_app(config):
     app.config.from_object(config)
 
     db.init_app(app)
+    cors.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
 
