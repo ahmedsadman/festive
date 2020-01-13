@@ -1,13 +1,15 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_cors import CORS
 from flask_jwt_extended import JWTManager
-from application.error_handlers import *
+from application.helpers.error_handlers import *
 
 # globally accessible variables
 db = SQLAlchemy()
 migrate = Migrate()
 jwt = JWTManager()
+cors = CORS()
 
 
 def create_app(config):
@@ -16,6 +18,7 @@ def create_app(config):
     app.config.from_object(config)
 
     db.init_app(app)
+    cors.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
 
@@ -33,6 +36,9 @@ def create_app(config):
         from .resources.auth import auth_bp
         from .resources.team import team_bp
         from .resources.payment import payment_bp
+
+        # import jwt claims loader
+        from .helpers.auth_helper import add_claims
 
         # register blueprints
         app.register_blueprint(info_bp, url_prefix="/")

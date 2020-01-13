@@ -2,9 +2,10 @@ from flask import request, Blueprint
 from marshmallow import ValidationError
 from flask_jwt_extended import jwt_required
 
+from application.helpers.auth_helper import super_admin_required
 from application.models import ParticipantModel
-from application.error_handlers import BadRequest, NotFound
-from application.schemas import ParticipantSchema, PaginatedResponse
+from application.helpers.error_handlers import BadRequest, NotFound
+from application.helpers.schemas import ParticipantSchema, PaginatedResponse
 
 participant_bp = Blueprint("participant", __name__)
 
@@ -21,7 +22,7 @@ def get_participant(participant_id):
 
 
 @participant_bp.route("/<participant_id>", methods=["DELETE"])
-@jwt_required
+@super_admin_required
 def delete_participant(participant_id):
     ps = ParticipantSchema(partial=True)
     participant = ParticipantModel.find_by_id(participant_id)
