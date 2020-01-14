@@ -40,7 +40,7 @@ class BaseSchema(Schema):
 
 class EventSchema(BaseSchema):
     name = fields.Str(required=True)
-    active = fields.Bool()
+    active = fields.Bool(missing=True)
     payable_amount = fields.Int(required=True)
     payable_school = fields.Int(missing=None)
     payable_college = fields.Int(missing=None)

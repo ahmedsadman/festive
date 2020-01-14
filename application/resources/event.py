@@ -34,6 +34,7 @@ def create_event():
     event = EventModel(
         data["name"],
         data["payable_amount"],
+        data["active"],
         data["payable_school"],
         data["payable_college"],
         data["payable_university"],

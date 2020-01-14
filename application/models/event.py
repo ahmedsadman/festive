@@ -23,6 +23,7 @@ class EventModel(BaseModel):
         self,
         name,
         payable_amount,
+        active=True,
         payable_school=None,
         payable_college=None,
         payable_university=None,
@@ -30,6 +31,7 @@ class EventModel(BaseModel):
         rulebook_url=None,
     ):
         self.name = name
+        self.active = active
         self.payable_amount = payable_amount
         self.payable_school = payable_school
         self.payable_college = payable_college
