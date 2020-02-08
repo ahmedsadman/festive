@@ -36,7 +36,7 @@ class UserBehavior(TaskSet):
     @task
     def event_register(self):
         response = self.client.post(
-            "/event/register/1", json=self.generate_data()
+            "/register/1", json=self.generate_data()
         )
         print(response)
 
