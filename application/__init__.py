@@ -37,8 +37,9 @@ def create_app(config):
         from .resources.team import team_bp
         from .resources.payment import payment_bp
 
-        # import jwt claims loader
+        # import jwt claims loader and admin helpers
         from .helpers.auth_helper import add_claims
+        from .helpers.admin import create_superadmin
 
         # register blueprints
         app.register_blueprint(info_bp, url_prefix="/")
@@ -50,4 +51,5 @@ def create_app(config):
         app.register_blueprint(payment_bp, url_prefix="/payment")
 
         db.create_all()
+        create_superadmin()
         return app

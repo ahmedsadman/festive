@@ -15,10 +15,11 @@ class UserModel(BaseModel):
     email = db.Column(db.String(50), unique=True)
     super_admin = db.Column(db.Boolean, default=False)
 
-    def __init__(self, username, password, email):
+    def __init__(self, username, password, email, super_admin=False):
         self.username = username
         self.password = password
         self.email = email
+        self.super_admin = super_admin
 
     @hybrid_property
     def password(self):

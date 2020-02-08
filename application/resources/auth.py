@@ -10,25 +10,6 @@ from application.helpers.error_handlers import *
 auth_bp = Blueprint("auth", __name__)
 
 
-@auth_bp.route("/register", methods=["POST"])
-def register():
-    us = UserSchema()
-    try:
-        data = us.load(request.get_json())
-    except ValidationError as err:
-        raise FieldValidationFailed(error=err.messages)
-
-    # check if the user already exists
-    if UserModel.find_by_username(data["username"]):
-        raise BadRequest(
-            message='The username "{}" already exists'.format(data["username"])
-        )
-
-    user = UserModel(data["username"], data["password"], data["email"])
-    user.save()
-    return UserSchema(exclude=("password",)).dump(user)
-
-
 @auth_bp.route("/login", methods=["POST"])
 def login():
     us = UserSchema(only=("username", "password"))
