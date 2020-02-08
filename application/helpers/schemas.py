@@ -55,6 +55,11 @@ class UserSchema(BaseSchema):
     email = fields.Email(required=True)
 
 
+class PasswordResetSchema(BaseSchema):
+    old_pass = fields.Str(required=True)
+    new_pass = fields.Str(required=True)
+
+
 class ParticipantSchema(BaseSchema):
     name = fields.Str(required=True, validate=validate.Length(max=60))
     email = fields.Email(required=True, validate=validate.Length(max=60))

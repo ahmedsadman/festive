@@ -36,5 +36,12 @@ class UserModel(BaseModel):
     def check_password(self, password):
         return check_password_hash(self.password, password)
 
+    def reset_password(self, old_pass, new_pass):
+        if self.check_password(old_pass):
+            self.password = new_pass
+            self.save()
+            return True
+        return False
+
     def is_super_admin(self):
         return self.super_admin is True
