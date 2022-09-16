@@ -26,7 +26,7 @@ itsdangerous==1.1.0
 Jinja2==2.10.1
 lazy-object-proxy==1.4.2
 locustio==0.12.1
-Mako==1.1.0
+Mako==1.2.2
 MarkupSafe==1.1.1
 marshmallow==3.0.0
 mccabe==0.6.1
